@@ -1,0 +1,163 @@
+@import url('http://cloudfront8.ia.net/wp-content/themes/iA4/stylesheets/fonts-1-2.css');
+
+body {
+  max-width: 680px;
+  margin: 20px 25px 100px 35px;
+  padding-right: 35px;
+  background-color: #FDFDFD;
+  border-right: 1px dotted #EEE;
+  font-family: iABCRegular, Baskerville, sans-serif;
+  font-size: 18px;
+  color: #222;
+  line-height: 24px;
+}
+
+a {
+  color: #D81E05;
+}
+
+small {
+  font-family: iABCRegularSC;
+  font-size: 1em;
+  text-transform: lowercase;
+}
+
+h1 {
+  margin: 50px 0 20px;
+  font-size: 32px;
+  font-style: italic;
+}
+
+h1 + code {
+  margin-left: -2px;
+  border-left: 0;
+  text-indent: -16px;
+}
+
+h2 {
+  margin: 40px 0 20px;
+  color: #000;
+  font-size: 24px;
+  font-style: italic;
+}
+
+p {
+  margin: 20px 0 10px;
+  text-align: justify;
+  text-indent: 1em;
+}
+
+p + p {
+  margin-top: 10px;
+}
+
+ol,
+ul {
+  margin: 20px 0;
+  padding: 0;
+  list-style: none;
+}
+
+ol ol,
+ol ul,
+ul ol,
+ul ul {
+  margin: 0 0 0 1em;
+}
+
+li {
+  margin: 0;
+  padding: 0;
+  text-indent: 1em;
+}
+
+ol li {
+  counter-increment: item-number;
+}
+
+ol ol li {
+  counter-increment: subitem-number;
+}
+
+ol ol ol li {
+  counter-increment: subsubitem-number;
+}
+
+ol li:before {
+  content: counter(item-number) '. ';
+}
+
+ol ol li:before {
+  content: counter(item-number) '.' counter(subitem-number) ' ';
+}
+
+ol ol ol li:before {
+  content: counter(item-number) '.' counter(subitem-number) '.' counter(subsubitem-number) ' ';
+}
+
+ul li:before {
+  content: '– ';
+}
+
+code {
+  display: block;
+  margin: 0 0 0 -18px;
+  padding: 10px 14px;
+  border-left: 4px solid #B7CCDB;
+  line-height: 24px;
+  font-family: Menlo, 'Ubuntu Mono', monospace;
+  font-size: 14px;
+  white-space: pre-wrap;
+}
+
+code strong {
+  color: #000;
+  font-style: normal;
+}
+
+code s {
+  color: #AAA;
+  font-style: normal;
+  text-decoration: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+code var {
+  color: #007AA5;
+  font-style: normal;
+}
+
+code string {
+  color: #AA753F;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+}
+
+p code,
+li code {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: #007AA5;
+  white-space: normal;
+}
+
+p code em,
+li code em {
+  border-bottom: 1px dotted #A5DDE2;
+  color: #00A3D1;
+  font-style: normal;
+}
+
+p code var,
+li code var {
+  border-bottom: 1px dotted #A5DDE2;
+  color: #00A3D1;
+  font-style: normal;
+}
+
+a[href$=".html"] {
+  font-family: Menlo, 'Ubuntu Mono', monospace;
+  font-size: 14px;
+}

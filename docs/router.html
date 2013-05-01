@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<meta charset="UTF-8" />
+<title>ian.Router</title>
+
+<link rel="stylesheet" href="./docs.css">
+
+<script src="http://esprima.org/esprima.js"></script>
+<script src="./highlighter.js"></script>
+
+<body>
+<h1>ian.Router</h1>
+<code>ian.Router(history: ian.History?, location: ian.Location?, mouse_handler: ian.MouseHandler?, touch_handler: ian.TouchHandler?)</code>
+
+<p>This core component observes the window state and translates pathnames to target keys based on a specified routing table.</p>
+<p>It is also possible to invoke any pathname state programatically from outside.</p>
+
+<h2>Basic Setup</h2>
+
+<code>var routes = {
+  '/profiles': 'profile:list',
+  '/profiles/:user_id': 'profile:show',
+  '/guide': 'guide'
+};
+
+var router = new ian.Router();
+router.init(routes);
+</code>
+
+<p>By default, the router uses plain <a href="./history.html">ian.History</a></code> and <a href="./location.html">ian.Location</a> objects that allow for a seamless behavior in older environments that do not implement the History Manipulation API. If there is a need for custom history and location API implementations, it is possible to pass them to the router.</p>
+<p>In the special case when the History Manipulation API simulation is not wanted, the first argument (or possibly the first two but it should not make any difference in modern environments) can be set to <code>null</code>.</p>
+
+<h2>Listening to the Router</h2>
+
+<code>var handleRoute = function (e: ian.Router.StateChangeEvent) {
+  var state = e.state: ian.Router.State;
+};
+
+goog.events.listen(router, 'statechange', handleRoute);
+</code>
+
+<p>The router emits only one type of events–<code>ian.Router.StateChangeEvent</code>s. These events are emitted when there is a new routing state and the app should change or reset the view.</p>
+<p>Each state change event has a <code>state</code> property which contains info about the current routing state. Properties of each <code>ian.Router.State</code> object are: <code>path</code> (the current pathname relative to the base), <code>target</code> (a target key) and <code>params</code> (current target/view parameters).</p>
+
+<h2>Changing Routes Programatically</h2>
+
+<p>A very common situation is that one view is in the need of redirecting the user to another view (i.e. routing target) or directly to a different path. This can be achieved using the provided methods:</p>
+<ul>
+  <li><code>navigate(<var>target</var><s>: string</s>, <var>params</var><s>: Object.&lt;string, string&gt;?</s>)</code>
+  <li><code>navigateToPath(<var>path</var><s>: string</s>)</code>
+</ul>

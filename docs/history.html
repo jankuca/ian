@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<meta charset="UTF-8" />
+<title>ian.History</title>
+
+<link rel="stylesheet" href="./docs.css">
+
+<script src="http://esprima.org/esprima.js"></script>
+<script src="./highlighter.js"></script>
+
+<body>
+<h1>ian.History</h1>
+<code>ian.History(window: Window?)</code>
+
+<p>This core component acts as a full-featured shim for missing History Manipulation API implementations in older environments. The core idea is that location hash parts are utilized in order to provide apps with seamless switching between different views.</p>
+<p>The signature of the hashes used by the component is <code>#!<var>path</var>:<var>state_index</var></code> which is the usual hashbang format with the added postfix required for correct behavior in case of older environments.</p>
+<p>The controlled <code>Window</code> object is observed for <code>hashchange</code> events (or periodically checked if such events are not available in the host environment) and translates them to custom <code>popstate</code> events of the type <code>ian.History.PopStateEvent</code>.</p>
+<p>Its main usage is in cooperation with a routing–<a href="./router.html">ian.Router</a>–object.</p>
+
+<h2>Basic Setup</h2>
+
+<code>var history = new ian.History();</code>
+
+<p>By default, the component uses the global <code>Window</code> object.</p>
+
+<h2>Manipulating the History</h2>
+
+<p>The standardized methods–<code>pushState</code> and <code>replaceState</code>–are implemented making its usage exactly the same as with the native History Manipulation API.</p>
+
+<code>var state = { 'a': 'b' };
+var path = '/a/b';
+history.pushState(state, '', path);
+</code>
+
+<p>Considering this the first call to the API after the instantiation of the component, the resulting location hash part is <code>#!<em>/a/b</em>:<em>0</em></code> and the provided state object is accessible as the <code>state</code> property of the component.</p>
+
+<h2>Listening to the History API</h2>
+
+<p>In case of external history manipulating operations such as the user pressing the back button in their browser, the history API emits <code>popstate</code> events on the host <code>Window</code> object.</p>
+
+<code>var handleState = function (e: ian.History.PopStateEvent) {
+  var state = e.state;
+};
+
+goog.events.listen(window, 'popstate', handleState);
+</code>
+
+<p>The state object available as the <code>state</code> property is the same as the value of the <code>state</code> property of the component.</p>

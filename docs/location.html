@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<meta charset="UTF-8" />
+<title>ian.Location</title>
+
+<link rel="stylesheet" href="./docs.css">
+
+<script src="http://esprima.org/esprima.js"></script>
+<script src="./highlighter.js"></script>
+
+<body>
+<h1>ian.Location</h1>
+<code>ian.Location(window: Window?)</code>
+
+<p>This core component acts as a shim for missing History Manipulation API implementations in older environments. The core idea is that location hash parts are merged with the location pathname parts. When used together with an <a href="./history.html">ian.History</a> object on the same host <code>Window</code> object, any path-related values provided by both components should match.</p>
+<p>The signature of the hashes expected by the component is <code>#!<var>path</var>:<var>state_index</var></code> which is the usual hashbang format with the added postfix required for correct behavior in case of older environments.</p>
+<p>The controlled <code>Window</code> object is observed for <code>hashchange</code> and <code>popstate</code> events (or periodically checked if such events are not available in the host environment).</p>
+<p>Its main usage is in cooperation with a routing–<a href="./router.html">ian.Router</a>–object.</p>
+
+<h2>Basic Setup</h2>
+
+<code>var location = new ian.Location();</code>
+
+<p>By default, the component uses the global <code>Window</code> object.</p>
