@@ -40,14 +40,14 @@ ian.mobile.NavigationController.prototype.setNavigationBar = function (bar) {
 
   if (this.navigation_bar) {
     this.element.removeChild(this.navigation_bar.element);
-    handler.unlisten(this.navigation_bar, 'back', this.popView);
+    handler.unlisten(this.navigation_bar, 'back', this.handleBackButtonClick_);
   }
 
   this.navigation_bar = bar;
 
   if (bar) {
     this.element.insertBefore(bar.element, this.element.firstChild);
-    handler.listen(this.navigation_bar, 'back', this.popView);
+    handler.listen(this.navigation_bar, 'back', this.handleBackButtonClick_);
   }
 };
 
@@ -111,3 +111,7 @@ ian.mobile.NavigationController.prototype.popView = function (immediate) {
   current_view.dispose();
 };
 
+
+ian.mobile.NavigationController.prototype.handleBackButtonClick_ = function () {
+  this.popView();
+};
