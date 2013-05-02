@@ -40,6 +40,7 @@ goog.events.listen(router, 'statechange', handleRoute);
 
 <p>The router emits only one type of events–<code>ian.Router.StateChangeEvent</code>s. These events are emitted when there is a new routing state and the app should change or reset the view.</p>
 <p>Each state change event has a <code>state</code> property which contains info about the current routing state. Properties of each <code>ian.Router.State</code> object are: <code>path</code> (the current pathname relative to the base), <code>target</code> (a target key) and <code>params</code> (current target/view parameters).</p>
+<p>Note that the router emits an initial state change event immediately on having its <code>init</code> method invoked. You want to make sure you <strong>start listening to these events before calling the <code>init</code> method</strong>.</p>
 
 <h2>Changing Routes Programatically</h2>
 

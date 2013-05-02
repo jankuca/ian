@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<meta charset="UTF-8" />
+<title>Mobile UI – ian Library Documentation</title>
+
+<link rel="stylesheet" href="./docs/docs.css">
+
+<script src="http://esprima.org/esprima.js"></script>
+<script src="./docs/highlighter.js"></script>
+
+<body>
+<h1>Mobile UI</h1>
+
+<p>The mobile UI components are inspired by the <a href="http://developer.apple.com/technologies/ios/cocoa-touch.html">Cocoa Touch</a> framework developed by Apple for building user interfaces of native iOS applications.</p>
+
+<h2 id="getting-started">Getting Started</h2>
+
+<p>Since the majority of mobile internet users are iPhone users, the overall default appearance of the UI components resemble the native UI components of iOS. The hierarchy or components is also a lot similar to native iOS applications.</p>
+<p>It is no surprise that we will take advantage of the core components of the <code>ian</code> library. The cornerstone of any app is a <em>router</em>–represented by an <a href="./docs/router.html">ian.Router</a> instance. See <a href="./core.html#getting-started">Getting Started with Core Components</a> to get familiar with the basic concepts of the <code>ian</code> library.</p>
+<p>A second object then listens to the router and updates the UI–switches views and controllers–accordingly. Such a component is called an <em>application delegate</em> in the <code>ian</code> library terminology. The mobile layer of the library includes a very basic implementation of an application delegate object suitable for simple mobile applications–<a href="./docs/mobile/application-delegate.html">ian.mobile.ApplicationDelegate</a>.</p>
+
+<code>var router = new ian.Router();
+var application_delegate = new ian.mobile.ApplicationDelegate(router);
+
+var win = new ian.mobile.Window();
+application_delegate.setRootView(win);
+
+router.init(routes);
+</code>
+
+<p>Notice the concept of a <em>root view</em> which in this simplest case is an <a href="./docs/mobile/window.html">ian.mobile.Window</a> wrapper object (implicitly around the <code>&lt;body&gt;</code> element; you can provide the constructor with a different one). The application delegate then adds and removes controller views from the wrapped element when a route target changes.</p>
+
+<h2 id="controllers">Controllers</h2>
+
+<p>Controllers are the components that contain any application logic. Each controller can have a <em>view</em> which is simply a representation of the visual output of the application. They inherit from the provided <a href="./docs/mobile/controller.html">ian.mobile.Controller</a>.</p>
+<p>They act as routing targets which means that their lifetime is affected by routing. A controller is <strong>instantiated automatically by the application delegate</strong> object when it observes a routing state that is to target it. It is then <strong>cached for the rest of the lifetime of the application</strong> so that it keeps its state when switching between route states.</p>
+<p>Whenever a controller is to be used, its view is shown to the user by placing the view element into the root view element instead of any previously active controller views.</p>
+<p>Controller initialization code should be placed in the <code>init</code> method. The expected outcome of this code is either to create a view and store it in the <code>view</code> property or to hand control over to a different controller (routing target) by calling the <code>redirectTo(<var>target</var><s>: string</s>)</code> method.</p>
+
+<code>app.MyController = function (router) {
+  ian.mobile.Controller.call(this, router);
+};
+
+goog.inherits(app.MyController, ian.mobile.Controller);
+
+app.MyController.prototype.init = function () {
+  var template = ian.mobile.templates.NavigationController;
+  var view = new ian.mobile.NavigationController(template);
+  this.view = view;
+};
+</code>
+
+<p>The <code>ian.mobile.NavigationController</code> object (which inherits from <a href="./mobile/view.html">ian.mobile.View</a>) is not the same kind of a controller as the <code>app.MyController</code> inheriting from <a href="./mobile/controller.html">ian.mobile.Controller</a>. You could say that <a href="./mobile/view.html">ian.mobile.View</a> objects are <em>view controllers</em>.</p>
+
+<h2 id="view-hierarchy">View Hierarchy</h2>
+
+<p>View components are nestable using the <code>addSubview(<var>subview</var><s>: ian.mobile.View</s>)</code> method. When a component is added as a subview to another, its view element is by default appended to the parent view element. You can modify this behavior by overriding the <code>addSubviewElement(<var>element</var><s>: Element</s>)</code> and <code>removeSubviewElement(<var>element</var><s>: Element</s>)</code> methods of <a href="./mobile/view.html">ian.mobile.View</a>.</p>
+<p>The <code>ian</code> library includes several components similar to those offered by Cocoa Touch. The most useful one is definitely the aforementioned <a href="./mobile/navigation-controller.html">ian.mobile.NavigationController</a> which allows for a stacked navigation through the application structure.</p>
+<p>Here is an example of a controller logic utilizing the navigation view controller by having three views connected by buttons:</p>
+
+<code>app.MyController.prototype.init = function () {
+  var template = ian.mobile.templates.NavigationController;
+  var view = new ian.mobile.NavigationController(template);
+  this.view = view;
+
+  this.pushStep1();
+};
+
+app.MyController.prototype.pushStep1 = function () {
+  var step_view = new ian.mobile.View();
+  step_view.navigation_item = new ian.mobile.NavigationItem();
+  step_view.navigation_item.title = 'My Cool Controller';
+
+  var button = new ian.mobile.Button(ian.mobile.templates.BlockButton);
+  button.setLabel('Continue');
+  step_view.addSubview(button);
+
+  var handler = this.getHandler();
+  handler.listen(button, 'click', this.pushStep2);
+
+  this.view.pushView(step_view);
+};
+
+app.MyController.prototype.pushStep2 = function () {
+  var step_view = new ian.mobile.View();
+
+  var button = new ian.mobile.Button(ian.mobile.templates.BlockButton);
+  button.setLabel('Continue');
+  step_view.addSubview(button);
+
+  var handler = this.getHandler();
+  handler.listen(button, 'click', this.pushStep3);
+
+  this.view.pushView(step_view);
+};
+
+app.MyController.prototype.pushStep3 = function () {
+  var step_view = new ian.mobile.View();
+  step_view.navigation_item = new ian.mobile.NavigationItem();
+  step_view.navigation_item.title = 'The End';
+
+  this.view.pushView(step_view);
+};
+</code>
+
+<p>See the documentation for <a href="./mobile/navigation-controller.html">ian.mobile.NavigationController</a> to learn about the concepts of view stacking and <em>navigation items</em>.</p>
+
+<h2 id="advanced-routing">Advanced Routing</h2>
+
+<p>So far, the logic has been pretty much static as there were no parameters passed to the routing targets. The great thing about routing is, however, that it is possible to define variables in the paths that are automatically passed to the application delegate object as routing target parameters.</p>
+<p>It is really up to the developer to decide whether they want to take advantage of this functionality for each individual controller. The difference between the two ways of building the controller is that with parameters, the <code>init</code> method does not build the subview hierarchy and this code is rather moved to a more specialized method <code>navigate(<var>action:</var><s>: string|null</s>, <var>params</var><s>: Object.&lt;string, string&gt;</s>)</code>. The main change is that this method can be called multiple times during the lifetime of the app as the user flows through the application rather than being called only once on controller instantiation (which is the case of the <code>init</code> method).</p>
+<p>Routing target keys can be in the format of <code><em>controller</em>:<em>action</em></code> which allows for more precise targeting of different states of the controller via routing as the <em>action key</em> part of the target key is passed as the first argument to the <code>navigate</code> method of the controller. Plus each action (each routing target from the router’s point of view) can have different set of parameters.</p>
+
+<code>app.MyController.prototype.init = function () {
+  var template = ian.mobile.templates.NavigationController;
+  var view = new ian.mobile.NavigationController(template);
+  this.view = view;
+
+  this.depth = 0;
+};
+
+app.MyController.prototype.navigate = function (action: string, params) {
+  switch (action) {
+  case 'step1':
+    this.popToDepth(0);
+    this.pushStep1(params);
+    this.depth = 1;
+    break;
+  case 'step2':
+    this.popToDepth(1);
+    if (this.depth < 1) this.pushStep1();
+    this.pushStep2(params);
+    this.depth = 2;
+    break;
+  case 'step3':
+    this.popToDepth(2);
+    if (this.depth < 1) this.pushStep1();
+    if (this.depth < 2) this.pushStep2();
+    this.pushStep3(params);
+    this.depth = 3;
+  }
+};
+
+app.MyController.prototype.popToDepth = function (depth) {
+  while (this.depth > depth) {
+    var immediate = (this.depth !== depth + 1);
+    this.view.popView(immediate);
+    this.depth -= 1;
+  }
+};
+</code>
+
+<p>The logic above is far from being great but it should be enough to get the idea of routing to different controller actions.</p>

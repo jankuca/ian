@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<meta charset="UTF-8" />
+<title>Core – ian Library Documentation</title>
+
+<link rel="stylesheet" href="./docs/docs.css">
+
+<script src="http://esprima.org/esprima.js"></script>
+<script src="./docs/highlighter.js"></script>
+
+<body>
+<h1>Core</h1>
+
+<h2 id="getting-started">Getting Started</h2>
+
+<p>It does not matter whether you are building a single-page application or a static website–you want to have some kind of a code organization system put in place so that you have code for each view in a different place. The <a href="./docs/router.html">ian.Router</a> component is a perfect start for this.</p>
+<p>You map different paths (<small>URL</small>s) of your application to so-called <em>routing targets</em> identified by <em>target keys</em>.</p>
+
+<code>var router = new ian.Router();
+router.init({
+  '/': 'homepage',
+  '/profile': 'profile:index',
+  '/profile/edit': 'profile:edit',
+  '/users': 'user:index',
+  '/users/:user_id': 'user:show'
+});
+</code>
+
+<p>You can use any arbitrary string as the <em>routing target key</em>–the router does not care. A common practice is to use either one-word identifiers or pairs of a controller name and a view/action as shown in the code above.</p>
+
+<h2 id="application-delegates">Application Delegates</h2>
+
+<p>The main building block of any application built upon <code>ian</code> should be some sort of an <em>application delegate</em> object that actually knows what the <em>target keys</em> mean and what are the actual <em>targets</em>. Such object then listens to the router for routing state change events.</p>
+
+<code>var app_delegate = new app.ApplicationDelegate(router);
+app_delegate.init({
+  'homepage': app.HomepageController,
+  'profile': app.ProfileController,
+  'user': app.UserController
+});
+</code>
+
+<p>The application delegate object now knows how to construct controllers for each set of the routing target keys.</p>
+
+<code>app.ApplicationDelegate = function (router: ian.Router) {
+  this.router_ = router;
+};
+
+app.ApplicationDelegate.prototype.init = function (targets) {
+  this.targets_ = targets;
+  this.listenToRouter_();
+};
+
+app.ApplicationDelegate.prototype.listenToRouter_ = function () {
+  var handler = new goog.events.EventHandler();
+  handler.listen(this.router_, 'statechange', this.handleRoute_);
+};
+
+app.ApplicationDelegate.prototype.handleRoute_ = function (e: ian.Router.StateChangeEvent) {
+  var keys = e.state.target.split(':');
+  var controller = this.targets_[keys[0]];
+  var action_key = keys[1] || 'index';
+
+  var target = new Controller(this);
+  target.navigate(action_key, e.state.params);
+};
+</code>
+
+<p>This particular application delegate expects the controllers to implement the <code>navigate(<var>action</var><s>: string</s>, <var>params</var><s>: Object.&lt;string, string&gt;</s>)</code> method. It does not handle <em>switching of views</em> or <em>obtaining any data from storage</em>. These things depend on each individual application and it it up to the developer to decide where to do such operations. This is of course one of the best places to do these things so it is highly recommended to at least handle view switching operations.</p>

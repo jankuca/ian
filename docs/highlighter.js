@@ -6,7 +6,7 @@ var known_types = {
 };
 
 var options = {
-  comment: true,
+  comment: false,
   range: true,
   loc: false,
   tolerant: true,
@@ -36,7 +36,7 @@ function highlightCode(code, scope) {
   var ranges = [];
 
   var deleted = 0;
-  code = code.replace(/(:(?:\s|&nbsp;)*([\w.]+?)\??)(,|;|\)(?:\s|$))/g, function (match, type, path, end, index) {
+  code = code.replace(/(:(?:\s|&nbsp;)*([\w.|]+?)\??)(,|;|\)(?:\s|$))/g, function (match, type, path, end, index) {
     var value = type;
     if (known_types[path]) {
       value = type.replace(path, '<a href="' + known_types[path] + '">' + path + '</a>');
@@ -122,6 +122,14 @@ function highlightCode(code, scope) {
           length: token.range[1] - token.range[0]
         });
       }
+
+      if (token.value === 'prototype' && i !== 0 && tokens[i - 1].value === '.') {
+        ranges.unshift({
+          type: 'prototype',
+          index: token.range[0],
+          length: token.range[1] - token.range[0]
+        });
+      }
       break;
     }
   });
@@ -134,6 +142,7 @@ function highlightCode(code, scope) {
     var wrap = [ '', '' ];
     switch (range.type) {
     case 'id': wrap[0] = '<var>'; wrap[1] = '</var>'; break;
+    case 'prototype': wrap[0] = '<small>'; wrap[1] = '</small>'; break;
     case 'constructor': wrap[0] = '<strong>'; wrap[1] = '</strong>'; break;
     case 'string': wrap[0] = '<string>'; wrap[1] = '</string>'; break;
     case 'type': wrap[0] = '<s>'; wrap[1] = '</s>'; break;

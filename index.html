@@ -13,62 +13,35 @@
 <p>The <code>ian</code> library is a set of fine-tuned front-end components developed by <a href="http://jankuca.com">Jan Kuča</a>. The main advantage of the library is that it is compilable in the <small>ADVANCED_OPTIMIZATIONS</small> compilation mode and the <small>VERBOSE</small> analysis level via the <a href="http://developers.google.com/closure/compiler">Google Closure Compiler</a>.</p>
 <p>Most of the core components are intended to be used in single-page applications. It, however, does often make sense to also use them in classic server-rendered applications or static websites.</p>
 
-<h2>Core Components</h2>
+<h2><a href="./core.html">Core</a></h2>
+<ul>
+  <li><a href="./core.html#getting-started">Getting Started</a>
+  <li><a href="./core.html#application-delegates">Application Delegates</a>
+</ul>
 <ul>
   <li><a href="./docs/history.html">ian.History</a>
   <li><a href="./docs/location.html">ian.Location</a>
   <li><a href="./docs/router.html">ian.Router</a>
 </ul>
 
-<h2>Getting Started</h2>
-<p>It does not matter whether you are building a single-page application or a static website–you want to have some kind of a code organization system put in place so that you have code for each view in a different place. The <a href="./docs/router.html">ian.Router</a> component is a perfect start for this.</p>
-<p>You map different paths (<small>URL</small>s) of your application to so-called <em>routing targets</em> identified by <em>target keys</em>.</p>
-
-<code>var router = new ian.Router();
-router.init({
-  '/': 'homepage',
-  '/profile': 'profile:index',
-  '/profile/edit': 'profile:edit',
-  '/users': 'user:index',
-  '/users/:user_id': 'user:show'
-});
-</code>
-
-<p>You can use any arbitrary string as the <em>routing target key</em>–the router does not care. A common practice is to use either one-word identifiers or pairs of a controller name and a view/action as shown in the code above.</p>
-<p>The main building block of any application built upon <code>ian</code> should be some sort of an <em>application delegate</em> object that actually knows what the <em>target keys</em> mean and what are the actual <em>targets</em>. Such object then listens to the router for routing state change events.</p>
-
-<code>var app_delegate = new app.ApplicationDelegate(router);
-app_delegate.init({
-  'homepage': app.HomepageController,
-  'profile': app.ProfileController,
-  'user': app.UserController
-});
-</code>
-
-<p>The application delegate object now knows how to construct controllers for each set of the routing target keys.</p>
-
-<code>app.ApplicationDelegate = function (router: ian.Router) {
-  this.router_ = router;
-};
-
-app.ApplicationDelegate.prototype.init = function (targets) {
-  this.targets_ = targets;
-  this.listenToRouter_();
-};
-
-app.ApplicationDelegate.prototype.listenToRouter_ = function () {
-  var handler = new goog.events.EventHandler();
-  handler.listen(this.router_, 'statechange', this.handleRoute_);
-};
-
-app.ApplicationDelegate.prototype.handleRoute_ = function (e: ian.Router.StateChangeEvent) {
-  var keys = e.state.target.split(':');
-  var controller = this.targets_[keys[0]];
-  var action_key = keys[1] || 'index';
-
-  var target = new Controller(this);
-  target.navigate(action_key, e.state.params);
-};
-</code>
-
-<p>This particular application delegate expects the controllers to implement the <code>navigate(<var>action</var><s>: string</s>, <var>params</var><s>: Object.&lt;string, string&gt;</s>)</code> method. It does not handle <em>switching of views</em> or <em>obtaining any data from storage</em>. These things depend on each individual application and it it up to the developer to decide where to do such operations. This is of course one of the best places to do these things so it is highly recommended to at least handle view switching operations.</p>
+<h2><a href="./mobile.html">Mobile UI</a></h2>
+<ul>
+  <li><a href="./mobile.html#getting-started">Getting Started</a>
+  <li><a href="./mobile.html#controllers">Controllers</a>
+  <li><a href="./mobile.html#view-hierarchy">View Hierarchy</a>
+  <li><a href="./mobile.html#advanced-routing">Advanced Routing</a>
+</ul>
+<ul>
+  <li><a href="./docs/mobile/application-delegate.html">ian.mobile.ApplicationDelegate</a>
+  <li><a href="./docs/mobile/button.html">ian.mobile.Button</a>
+  <li><a href="./docs/mobile/controller.html">ian.mobile.Controller</a>
+  <li><a href="./docs/mobile/form.html">ian.mobile.Form</a>
+  <li><a href="./docs/mobile/input.html">ian.mobile.Input</a>
+  <li><a href="./docs/mobile/navigation-bar.html">ian.mobile.NavigationBar</a>
+  <li><a href="./docs/mobile/navigation-bar-title.html">ian.mobile.NavigationBarTitle</a>
+  <li><a href="./docs/mobile/navigation-controller.html">ian.mobile.NavigationController</a>
+  <li><a href="./docs/mobile/navigation-item.html">ian.mobile.NavigationItem</a>
+  <li><a href="./docs/mobile/text-input.html">ian.mobile.TextInput</a>
+  <li><a href="./docs/mobile/view.html">ian.mobile.View</a>
+  <li><a href="./docs/mobile/window.html">ian.mobile.Window</a>
+</ul>

@@ -3,6 +3,7 @@
 body {
   max-width: 680px;
   margin: 20px 25px 100px 35px;
+  padding-bottom: 100px;
   padding-right: 35px;
   background-color: #FDFDFD;
   border-right: 1px dotted #EEE;
@@ -14,6 +15,22 @@ body {
 
 a {
   color: #D81E05;
+}
+
+a:hover,
+a:focus {
+  text-decoration: none;
+}
+
+a:focus {
+  outline: none;
+  background-color: #FFA;
+}
+
+strong {
+  color: #000;
+  font-weight: normal;
+  border-bottom: 1px dotted #BBB;
 }
 
 small {
@@ -35,7 +52,8 @@ h1 + code {
 }
 
 h2 {
-  margin: 40px 0 20px;
+  margin: 20px 0;
+  padding-top: 20px;
   color: #000;
   font-size: 24px;
   font-style: italic;
@@ -101,7 +119,7 @@ ul li:before {
 
 code {
   display: block;
-  margin: 0 0 0 -18px;
+  margin: 15px 0 15px -18px;
   padding: 10px 14px;
   border-left: 4px solid #B7CCDB;
   line-height: 24px;
@@ -113,13 +131,22 @@ code {
 code strong {
   color: #000;
   font-style: normal;
+  font-weight: bold;
+  border-bottom: none;
 }
 
-code s {
+code s,
+code small {
   color: #AAA;
+  font-family: inherit;
+  font-size: 1em;
   font-style: normal;
   text-decoration: none;
   -webkit-font-smoothing: antialiased;
+}
+
+code small {
+  color: #888;
 }
 
 code var {
@@ -157,7 +184,18 @@ li code var {
   font-style: normal;
 }
 
-a[href$=".html"] {
+p a[href^="./"][href$=".html"],
+li a[href^="./"][href$=".html"] {
   font-family: Menlo, 'Ubuntu Mono', monospace;
   font-size: 14px;
+}
+
+h1 a,
+h2 a {
+  text-decoration: none;
+}
+
+h1 a:hover,
+h2 a:hover {
+  text-decoration: underline;
 }
