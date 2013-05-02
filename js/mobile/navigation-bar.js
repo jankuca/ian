@@ -131,8 +131,9 @@ ian.mobile.NavigationBar.prototype.popTitle_ = function (immediate) {
 
 /**
  * @param {!ian.mobile.Button} back_button The new title view.
+ * @param {boolean=} immediate Whether to skip the animation.
  */
-ian.mobile.NavigationBar.prototype.pushBackButton_ = function (back_button) {
+ian.mobile.NavigationBar.prototype.pushBackButton_ = function (back_button, immediate) {
   var current_back_button = goog.array.peek(this.back_buttons_);
   this.back_buttons_.push(back_button);
 
@@ -156,9 +157,10 @@ ian.mobile.NavigationBar.prototype.pushBackButton_ = function (back_button) {
 
 
 /**
+ * @param {boolean=} immediate Whether to skip the animation.
  * @return {ian.mobile.NavigationBarTitle} The previous back_button view.
  */
-ian.mobile.NavigationBar.prototype.popBackButton_ = function () {
+ian.mobile.NavigationBar.prototype.popBackButton_ = function (immediate) {
   var current_back_button = this.back_buttons_.pop();
   var prev_back_button = goog.array.peek(this.back_buttons_);
 

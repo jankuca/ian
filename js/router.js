@@ -13,8 +13,8 @@ goog.require('goog.object');
 /**
  * @constructor
  * @extends {goog.events.EventTarget}
- * @param {!History=} history A history API.
- * @param {!Location=} location A location API.
+ * @param {!History|ian.History=} history A history API.
+ * @param {!Location|ian.Location=} location A location API.
  * @param {!ian.MouseHandler=} mouse_handler A mouse handler.
  * @param {!ian.TouchHandler=} touch_handler A touch handler.
  */

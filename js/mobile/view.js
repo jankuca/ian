@@ -2,16 +2,16 @@ goog.provide('ian.mobile.View');
 
 goog.require('goog.array');
 goog.require('goog.dom.classes');
-goog.require('goog.ian.mobile.Component');
+goog.require('goog.ui.Component');
 
 
 /**
  * @constructor
- * @extends {goog.ian.mobile.Component}
+ * @extends {goog.ui.Component}
  * @param {(string|function():string)=} template A view template to use.
  */
 ian.mobile.View = function (template) {
-  goog.ian.mobile.Component.call(this);
+  goog.ui.Component.call(this);
 
   this.element = this.createElementFromTemplate_(template);
 
@@ -20,7 +20,7 @@ ian.mobile.View = function (template) {
   this.subviews_ = [];
 };
 
-goog.inherits(ian.mobile.View, goog.ian.mobile.Component);
+goog.inherits(ian.mobile.View, goog.ui.Component);
 
 
 /**
@@ -84,7 +84,7 @@ ian.mobile.View.prototype.addSubviewElement = function (element) {
  * @param {!Element} element The subview element to remove.
  */
 ian.mobile.View.prototype.removeSubviewElement = function (element) {
-  this.element.removeChild(subview.element);
+  this.element.removeChild(element);
 };
 
 
