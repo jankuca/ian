@@ -37,6 +37,24 @@ ian.mobile.Controller.prototype.getHandler = function () {
 };
 
 
+ian.mobile.Controller.prototype.listen = function (target, fn) {
+  var handler = this.getHandler();
+  handler.listen(target, fn);
+};
+
+
+ian.mobile.Controller.prototype.listenOnce = function (target, fn) {
+  var handler = this.getHandler();
+  handler.listenOnce(target, fn);
+};
+
+
+ian.mobile.Controller.prototype.unlisten = function (target, fn) {
+  var handler = this.getHandler();
+  handler.unlisten(target, fn);
+};
+
+
 /**
  * @param {ian.mobile.View} view The view to associate with the controller.
  */
