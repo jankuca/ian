@@ -10,6 +10,7 @@ goog.require('goog.events.EventHandler');
 ian.mobile.ApplicationDelegate = function (router) {
   this.$router = router;
   this.$handler = new goog.events.EventHandler(this);
+  this.$session = {};
 
   this.root_view_ = null;
   this.current_controller_ = null;
@@ -93,6 +94,7 @@ ian.mobile.ApplicationDelegate.prototype.getControllerByKey = function (key) {
     var Controller = this.constructors_[key];
     if (Controller) {
       controller = new Controller(this.$router);
+      controller.$session = this.$session;
     }
   }
 
