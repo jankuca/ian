@@ -11,8 +11,6 @@ ian.mobile.Controller = function (router) {
   this.view = null;
 
   this.handler_ = null;
-
-  this.init();
 };
 
 
