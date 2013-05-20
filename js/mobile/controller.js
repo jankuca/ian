@@ -37,21 +37,21 @@ ian.mobile.Controller.prototype.getHandler = function () {
 };
 
 
-ian.mobile.Controller.prototype.listen = function (target, fn) {
+ian.mobile.Controller.prototype.listen = function (target, type, fn) {
   var handler = this.getHandler();
-  handler.listen(target, fn);
+  handler.listen(target, type, fn);
 };
 
 
-ian.mobile.Controller.prototype.listenOnce = function (target, fn) {
+ian.mobile.Controller.prototype.listenOnce = function (target, type, fn) {
   var handler = this.getHandler();
-  handler.listenOnce(target, fn);
+  handler.listenOnce(target, type, fn);
 };
 
 
-ian.mobile.Controller.prototype.unlisten = function (target, fn) {
+ian.mobile.Controller.prototype.unlisten = function (target, type, fn) {
   var handler = this.getHandler();
-  handler.unlisten(target, fn);
+  handler.unlisten(target, type, fn);
 };
 
 
