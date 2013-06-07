@@ -131,7 +131,7 @@ ian.Router.prototype.getBasePath_ = function () {
  * @param {!PopStateEvent} e A popstate event.
  */
 ian.Router.prototype.handlePopState_ = function (e) {
-  var state = (/** @type {ian.Router.State} */ e.state);
+  var state = /** @type {ian.Router.State} */ (e.state);
   if (state) {
     this.setState(state);
   }
