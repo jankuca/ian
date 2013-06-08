@@ -13,6 +13,7 @@ ian.ui.ResponsiveImage = function () {
   goog.ui.Component.call(this);
 
   this.img = null;
+  this.cname_ = '';
   this.sources_ = [];
   this.active_source_ = null;
 
@@ -55,9 +56,11 @@ ian.ui.ResponsiveImage.prototype.decorate = function (el) {
   });
 
   this.img = img;
+  this.cname_ = img.className;
   this.sources_ = goog.array.map(sources, function (source) {
     return {
       src: source.getAttribute('src') || '',
+      className: source.className || '',
       media: source.getAttribute('media') || null
     };
   });
@@ -104,6 +107,7 @@ ian.ui.ResponsiveImage.prototype.update = function () {
 ian.ui.ResponsiveImage.prototype.useSource_ = function (source) {
   if (this.active_source_ !== source) {
     this.img.setAttribute('src', source.src);
+    this.img.className = this.cname_ + ' ' + source.className;
     this.active_source_ = source;
   }
-}
+};
