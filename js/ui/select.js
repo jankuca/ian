@@ -2,6 +2,8 @@ goog.provide('ian.ui.Select');
 
 goog.require('goog.array');
 goog.require('goog.dom.classes');
+goog.require('goog.dom.forms');
+goog.require('goog.events.Event');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler');
 goog.require('goog.ui.Component');
@@ -18,6 +20,8 @@ ian.ui.Select = function () {
   this.value_el_ = null;
 
   this.key_handler_ = null;
+
+  this.value_ = '';
 };
 
 goog.inherits(ian.ui.Select, goog.ui.Component);
@@ -25,12 +29,18 @@ goog.inherits(ian.ui.Select, goog.ui.Component);
 
 ian.ui.Select.convertSelectBoxesInElement = function (container) {
   var select_boxes = container.getElementsByTagName('select');
+  var selects = [];
+
   goog.array.forEach(select_boxes, function (select_box) {
     if (!goog.dom.classes.has(select_box.parentNode, 'select')) {
       var select = new ian.ui.Select();
       select.decorate(select_box);
+
+      selects.push(select);
     }
   });
+
+  return selects;
 };
 
 
@@ -80,8 +90,16 @@ ian.ui.Select.prototype.update = function () {
   var selected_index = this.select_box_.selectedIndex;
   var option = this.select_box_.options[selected_index];
   var option_label = dom.getTextContent(option) || option.value;
+  var value = option.value || option_label;
 
   dom.setTextContent(this.value_el_, option_label);
+
+  if (value !== this.value_) {
+    this.value_ = value;
+
+    var change_e = new goog.events.Event('change');
+    this.dispatchEvent(change_e);
+  }
 };
 
 
@@ -98,4 +116,16 @@ ian.ui.Select.prototype.handleKey_ = function (e) {
     this.update();
     break;
   }
+};
+
+
+ian.ui.Select.prototype.getValue = function () {
+  return goog.dom.forms.getValue(this.select_box_);
+};
+
+
+ian.ui.Select.prototype.getSelectedOption = function () {
+  var selected_index = this.select_box_.selectedIndex;
+  var option = this.select_box_.options[selected_index];
+  return option;
 };
