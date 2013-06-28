@@ -129,3 +129,19 @@ ian.ui.Select.prototype.getSelectedOption = function () {
   var option = this.select_box_.options[selected_index];
   return option;
 };
+
+
+ian.ui.Select.prototype.getSelectBoxElement = function () {
+  return this.select_box_;
+};
+
+
+ian.ui.Select.prototype.getSelectedOptionIndex = function (index) {
+  return this.select_box_.selectedIndex;
+};
+
+
+ian.ui.Select.prototype.setSelectedOptionIndex = function (index) {
+  this.select_box_.selectedIndex = index;
+  this.update();
+};
