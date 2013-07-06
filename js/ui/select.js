@@ -59,7 +59,6 @@ ian.ui.Select.prototype.decorate = function (select_box) {
 
   var dom = this.getDomHelper();
   var el = dom.createDom('div', { 'class': 'select' });
-  el.setAttribute('tabindex', '-1');
 
   this.value_el_ = dom.createDom('span', { 'class': 'select-value' });
   el.appendChild(this.value_el_);
@@ -83,12 +82,13 @@ ian.ui.Select.prototype.decorate = function (select_box) {
 
     goog.style.setElementShown(this.dropdown_el_, false);
     el.appendChild(this.dropdown_el_);
+
+    el.setAttribute('tabindex', '-1');
+    goog.style.setElementShown(this.select_box_, false);
   }
 
   select_box.parentNode.insertBefore(el, this.select_box_);
   el.appendChild(this.select_box_);
-
-  goog.style.setElementShown(this.select_box_, false);
 
   goog.base(this, 'decorate', el);
 
@@ -156,13 +156,17 @@ ian.ui.Select.prototype.update = function () {
 
 
 ian.ui.Select.prototype.open_ = function () {
-  goog.style.setElementShown(this.dropdown_el_, true);
+  if (this.dropdown_el_) {
+    goog.style.setElementShown(this.dropdown_el_, true);
+  }
   this.is_open_ = true;
 };
 
 
 ian.ui.Select.prototype.close_ = function () {
-  goog.style.setElementShown(this.dropdown_el_, false);
+  if (this.dropdown_el_) {
+    goog.style.setElementShown(this.dropdown_el_, false);
+  }
   this.is_open_ = false;
 };
 
