@@ -94,11 +94,22 @@ ian.fx.Dragger.prototype.endDrag = function () {
   this.handler_.unlisten(this.element_, this.end_e_type_, this.endDrag);
   this.handler_.unlisten(this.element_, this.cancel_e_type_, this.endDrag);
 
-  if (goog.math.Coordinate.equals(this.last_coords_, this.start_coords_)) {
-    this.target_element_.click();
-  }
-
+  var last_coords = this.last_coords_;
   this.last_coords_ = null;
+
+  if (goog.math.Coordinate.equals(last_coords, this.start_coords_)) {
+    var doc = goog.dom.getDocument();
+    var target = this.target_element_;
+    while (target.tagName !== 'A' && target !== doc) {
+      target = target.parentNode;
+    }
+    if (target !== doc) {
+      var click_e = doc.createEvent('MouseEvents');
+      click_e.initEvent('click', true, true);
+      target.dispatchEvent(click_e);
+      return;
+    }
+  }
 
   var end_e = new goog.events.Event('end');
   this.dispatchEvent(end_e);
