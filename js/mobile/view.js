@@ -2,106 +2,24 @@ goog.provide('ian.mobile.View');
 
 goog.require('goog.array');
 goog.require('goog.dom.classes');
-goog.require('goog.ui.Component');
+goog.require('ian.View');
 
 
 /**
  * @constructor
- * @extends {goog.ui.Component}
+ * @extends {ian.View}
  * @param {(string|function():string)=} template A view template to use.
  */
 ian.mobile.View = function (template) {
-  goog.ui.Component.call(this);
+  ian.View.call(this);
 
   this.element = this.createElementFromTemplate_(template);
 
   this.in_transition_ = false;
   this.transition_timeout_ = 0;
-  this.subviews_ = [];
 };
 
-goog.inherits(ian.mobile.View, goog.ui.Component);
-
-
-/**
- * @param {(string|function():string)=} template A view template to use.
- * @return {!Element} An element or a document fragment (depending on the number
- *   of elements resulting from the template).
- */
-ian.mobile.View.prototype.createElementFromTemplate_ = function (template) {
-  var dom = this.getDomHelper();
-
-  if (!template) {
-    return dom.createDom('div');
-  }
-
-  if (goog.isFunction(template)) {
-    template = template();
-  }
-
-  return (/** @type {!Element} */ dom.htmlToDocumentFragment(template));
-};
-
-
-/**
- * @param {!ian.mobile.View} subview The subview to add.
- */
-ian.mobile.View.prototype.addSubview = function (subview) {
-  this.subviews_.push(subview);
-  this.addSubviewElement(subview.element);
-
-  subview.setParentView(this);
-};
-
-
-/**
- * @param {!ian.mobile.View} subview The subview to remove.
- */
-ian.mobile.View.prototype.removeSubview = function (subview) {
-  var index = goog.array.indexOf(this.subviews_, subview);
-  if (index !== -1) {
-    this.subviews_.splice(index, 1);
-  }
-
-  this.removeSubviewElement(subview.element);
-
-  var parent_view = subview.getParentView();
-  if (parent_view === this) {
-    subview.setParentView(null);
-  }
-};
-
-
-/**
- * @param {!Element} element The subview element to add.
- */
-ian.mobile.View.prototype.addSubviewElement = function (element) {
-  this.element.appendChild(element);
-};
-
-
-/**
- * @param {!Element} element The subview element to remove.
- */
-ian.mobile.View.prototype.removeSubviewElement = function (element) {
-  this.element.removeChild(element);
-};
-
-
-ian.mobile.View.prototype.setParentView = function (parent_view) {
-  this.parent_view_ = parent_view;
-
-  if (parent_view) {
-    this.enterDocument();
-  } else {
-    this.exitDocument();
-  }
-};
-
-
-ian.mobile.View.prototype.getParentView = function () {
-  return this.parent_view_;
-};
+goog.inherits(ian.mobile.View, ian.View);
 
 
 ian.mobile.View.prototype.dispose = function () {
@@ -114,19 +32,6 @@ ian.mobile.View.prototype.dispose = function () {
   }
 
   goog.base(this, 'dispose');
-
-  if (this.parent_view_) {
-    this.parent_view_.removeSubview(this);
-  }
-
-  var parent_element = this.element.parentNode;
-  if (parent_element) {
-    parent_element.removeChild(this.element);
-  }
-
-  goog.array.forEach(this.subviews_, function (subview) {
-    subview.dispose();
-  });
 };
 
 
