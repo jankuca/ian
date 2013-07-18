@@ -49,10 +49,21 @@ goog.inherits(ian.Router, goog.events.EventTarget);
 /**
  * @param {!Object.<string, string>} routes A route map.
  */
+ian.Router.prototype.setRoutes = function (routes) {
+  this.routes = this.parseRoutes_(routes);
+};
+
+
+/**
+ * @param {!Object.<string, string>=} routes A route map.
+ */
 ian.Router.prototype.init = function (routes) {
   var event_handler = new goog.events.EventHandler(this);
 
-  this.routes = this.parseRoutes_(routes);
+  if (routes) {
+    this.setRoutes(routes);
+  }
+
   this.event_handler = event_handler;
   this.base = this.getBasePath_();
 
