@@ -27,8 +27,17 @@ ian.ApplicationDelegate = function (router, services, cfg) {
 /**
  * @param {Object.<string, Function>} constructors A constructor map.
  */
-ian.ApplicationDelegate.prototype.setConstructors = function (constructors) {
+ian.ApplicationDelegate.prototype.setControllers = function (constructors) {
   this.constructors_ = constructors || {};
+};
+
+
+/**
+ * @param {Object.<string, Function>} constructors A constructor map.
+ * @deprecated
+ */
+ian.ApplicationDelegate.prototype.setConstructors = function (constructors) {
+  this.setControllers(constructors);
 };
 
 
