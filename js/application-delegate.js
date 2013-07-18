@@ -63,7 +63,7 @@ ian.ApplicationDelegate.prototype.handleRoute_ = function (e) {
   this.beforeControllerChange(current_controller, controller);
 
   this.current_controller = controller;
-  controller.navigate(action_key, state.params);
+  this.navigateToController(controller, action_key, state.params);
 
   this.afterControllerChange(current_controller, controller);
 };
@@ -72,6 +72,12 @@ ian.ApplicationDelegate.prototype.handleRoute_ = function (e) {
 ian.ApplicationDelegate.prototype.beforeControllerChange =
     function (old_controller, new_controller) {
   // override this
+};
+
+
+ian.ApplicationDelegate.prototype.navigateToController =
+    function (new_controller, action_key, params) {
+  new_controller.navigate(action_key, params);
 };
 
 
