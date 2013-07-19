@@ -1,0 +1,43 @@
+{namespace ian.templates.error}
+
+
+/**
+ * A general error
+ * @param err
+ */
+{template .general}
+  <p>General error:</p>
+  <p>{$err.message}</p>
+{/template}
+
+
+/**
+ * A bad request error
+ */
+{template .badRequest}
+  <p>Bad Request</p>
+{/template}
+
+
+/**
+ * A forbidden error
+ */
+{template .forbidden}
+  <p>Forbidden</p>
+{/template}
+
+
+/**
+ * A not found error
+ */
+{template .notFound}
+  <p>Page Not Found</p>
+{/template}
+
+
+/**
+ * A server error
+ */
+{template .serverError}
+  <p>Server Error</p>
+{/template}
