@@ -67,15 +67,18 @@ ian.ServiceContainer.prototype.getAll = function (keys) {
  *   dependencies.
  */
 ian.ServiceContainer.prototype.create = function (Constructor, var_args) {
-  var keys = Constructor.prototype.$deps || [];
+  /**
+   * @constructor
+   */
+  var Instantiator = function () {};
+  Instantiator.prototype = Constructor.prototype;
+  Instantiator.prototype.$deps = Instantiator.prototype.$deps || [];
+
+  var instance = new Instantiator();
+  var keys = instance.$deps || [];
   var services = this.getAll(keys);
   var args = services.concat(Array.prototype.slice.call(arguments, 1));
 
-  var Instantiator = function () {};
-  Instantiator.prototype = Constructor.prototype;
-
-  var instance = new Instantiator();
   var result = Constructor.apply(instance, args);
-
   return goog.isDef(result) ? result : instance;
 };
