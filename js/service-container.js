@@ -27,7 +27,7 @@ ian.ServiceContainer.prototype.add = function (key, factory) {
 
 
 /**
- * @param {string} key A key of a service.
+ * @param {string} key The key of the service being retrieved.
  * @return {!Object} An instance of the requested service.
  */
 ian.ServiceContainer.prototype.get = function (key) {
@@ -46,6 +46,15 @@ ian.ServiceContainer.prototype.get = function (key) {
   }
 
   return instance;
+};
+
+
+/**
+ * @param {string} key The key of the service being defined.
+ * @param {!Object} instance An instance of the service.
+ */
+ian.ServiceContainer.prototype.set = function (key, instance) {
+  this.instances_[key] = instance;
 };
 
 
