@@ -79,17 +79,45 @@ ian.ui.Compiler.prototype.compileElement_ = function (element) {
 
   var class_name_attr = element.className;
   if (class_name_attr) {
+    var component_class_name;
+
     var class_names = goog.string.trim(class_name_attr).split(/\s+/);
-    for (var i = 0, ii = class_names.length; i < ii; ++i) {
+    for (var i = 0; i < class_names.length; ++i) {
       var constructor_name = ian.string.toPascalCase(class_names[i]);
       if (defs[constructor_name]) {
+        component_class_name = class_names[i];
+        class_names.splice(i, 1);
+        i -= 1;
         component = this.createComponent_(constructor_name, element);
         break;
+      }
+    }
+
+    if (component_class_name) {
+      var state = this.getStateFromClasses(component_class_name, class_names);
+      for (var state_key in state) {
+        component.setState(state_key, state[state_key]);
       }
     }
   }
 
   return component;
+};
+
+
+ian.ui.Compiler.prototype.getStateFromClasses = function (base, classes) {
+  var state = {};
+
+  for (var i = 0, ii = classes.length; i < ii; ++i) {
+    var class_name = classes[i];
+    if (class_name.substr(0, base.length + 1) === base + '-') {
+      var state_key = class_name.substr(base.length + 1);
+      state_key = ian.string.toSnakeCase(state_key);
+      state[state_key] = true;
+    }
+  }
+
+  return state;
 };
 
 
