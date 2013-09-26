@@ -4,6 +4,8 @@ goog.provide('ian.Router.StateChangeEvent');
 
 goog.require('ian.History');
 goog.require('ian.Location');
+goog.require('ian.MouseHandler');
+goog.require('ian.TouchHandler');
 goog.require('goog.dom');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');

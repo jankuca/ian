@@ -1,5 +1,7 @@
 goog.provide('ian.ApplicationDelegate');
 
+goog.require('ian.ServiceContainer');
+
 
 /**
  * @constructor
