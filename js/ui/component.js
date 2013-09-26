@@ -7,6 +7,15 @@ goog.provide('ian.ui.Component');
  */
 ian.ui.Component = function () {
   this.$element = null;
+
+  /**
+   * @type {!Object.<string, *>}
+   */
+  this.$scope = {};
+
+  /**
+   * @type {!Object.<string, boolean>}
+   */
   this.$state = {};
   this.$children = {};
 
@@ -21,8 +30,15 @@ ian.ui.Component.prototype.decorate = function (element) {
 };
 
 
-ian.ui.Component.prototype.setState = function (state) {
-  this.$state = state;
+/**
+ * @param {!Object} scope The scope for the component to use. If there were any
+ *   changes to the default empty scope, the data are copied to the new scope.
+ */
+ian.ui.Component.prototype.setScope = function (scope) {
+  var old_scope = this.$scope;
+
+  goog.object.extend(scope, old_scope);
+  this.$scope = scope;
 };
 
 

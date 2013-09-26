@@ -15,7 +15,7 @@ goog.require('ian.ui.$$components');
 ian.ui.Compiler = function (services) {
   this.services_ = services;
 
-  this.state_stack_ = [];
+  this.scope_stack_ = [];
 };
 
 
@@ -30,8 +30,8 @@ ian.ui.Compiler.prototype.init = function (root, namespace) {
   this.namespace_ = namespace || null;
   this.definitions_ = this.getComponentDefinitions_();
 
-  var global_state = {};
-  this.state_stack_ = [ global_state ];
+  var global_scope = {};
+  this.scope_stack_ = [ global_scope ];
   this.compileSubTree_(root);
 };
 
@@ -63,7 +63,7 @@ ian.ui.Compiler.prototype.compileSubTree_ = function (root) {
   }, this);
 
   if (component) {
-    this.state_stack_.shift();
+    this.scope_stack_.shift();
   }
 };
 
@@ -114,9 +114,9 @@ ian.ui.Compiler.prototype.createComponent_ =
 
   component.decorate(element);
 
-  var state = ian.object.create(this.state_stack_[0]);
-  this.state_stack_.unshift(state);
-  component.setState(state);
+  var scope = ian.object.create(this.scope_stack_[0]);
+  this.scope_stack_.unshift(scope);
+  component.setScope(scope);
 
   return component;
 };
