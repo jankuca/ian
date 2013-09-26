@@ -63,6 +63,7 @@ ian.ui.Compiler.prototype.compileSubTree_ = function (root) {
   }, this);
 
   if (component) {
+    component.decorate(root);
     this.scope_stack_.shift();
   }
 };
@@ -111,8 +112,6 @@ ian.ui.Compiler.prototype.createComponent_ =
         this.namespace_ + '.' + constructor_name +
         ' does not extend ian.ui.Component');
   }
-
-  component.decorate(element);
 
   var scope = ian.object.create(this.scope_stack_[0]);
   this.scope_stack_.unshift(scope);
