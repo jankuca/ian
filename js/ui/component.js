@@ -6,6 +6,9 @@ goog.provide('ian.ui.Component');
  * @ngInject
  */
 ian.ui.Component = function () {
+  /**
+   * @type {Element}
+   */
   this.$element = null;
 
   /**
@@ -17,13 +20,27 @@ ian.ui.Component = function () {
    * @type {!Object.<string, boolean>}
    */
   this.$state = {};
+
+  /**
+   * @type {!Object.<string, !Element>}
+   */
   this.$children = {};
 
+  /**
+   * @type {goog.events.EventHandler}
+   */
   this.event_handler_ = null;
+
+  /**
+   * @type {boolean}
+   */
   this.in_document_ = false;
 };
 
 
+/**
+ * @param {!Element} element The element the component should be decorating.
+ */
 ian.ui.Component.prototype.decorate = function (element) {
   this.$element = element;
   this.render();
@@ -42,16 +59,35 @@ ian.ui.Component.prototype.setScope = function (scope) {
 };
 
 
+/**
+ * @param {string} key A state key.
+ * @param {boolean} state The new state value.
+ */
+ian.ui.Component.prototype.setState = function (key, state) {
+  this.$state[key] = Boolean(state);
+};
+
+
+/**
+ * @param {string} key The child key.
+ * @param {!Element} child The new child.
+ */
 ian.ui.Component.prototype.addChild = function (key, child) {
   this.$children[key] = child;
 };
 
 
+/**
+ * @return {!goog.events.EventHandler}
+ */
 ian.ui.Component.prototype.getHandler = function () {
   var handler = this.event_handler_;
   if (handler) {
     return handler;
   }
+
+  this.event_handler_ = new goog.events.EventHandler(this);
+  return this.event_handler_;
 };
 
 
