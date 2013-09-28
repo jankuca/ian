@@ -32,6 +32,7 @@ ian.ui.Compiler.prototype.init = function (root, namespace) {
 
   var global_scope = {};
   this.scope_stack_ = [ global_scope ];
+
   this.compileSubTree_(root);
 };
 
@@ -55,16 +56,44 @@ ian.ui.Compiler.prototype.getComponentDefinitions_ = function () {
 ian.ui.Compiler.prototype.compileSubTree_ = function (root) {
   var component = null;
 
-  if (goog.dom.isElement(root)) {
+  if (goog.dom.isElement(root) && !root.hasAttribute('data-component')) {
     component = this.compileElement_(root);
+    root.setAttribute('data-component', '');
   }
-  goog.array.forEach(root.children, function (child) {
-    this.compileSubTree_(child);
-  }, this);
+
+  if (!component || !component.$$invalidated) {
+    goog.array.forEach(root.children, function (child) {
+      this.compileSubTree_(child);
+    }, this);
+  }
 
   if (component) {
-    component.decorate(root);
-    this.scope_stack_.shift();
+    if (!component.isInitialized()) {
+      component.init();
+      component.setInitialized();
+    }
+
+    var invalidation_count = 0;
+    do {
+      if (invalidation_count === 10) {
+        throw new Error(
+          'Maximum of 10 synchronous invalidations for a component reached');
+      }
+
+      component.decorate(root);
+
+      if (component.isInvalidated()) {
+        var new_element = component.render();
+        root.parentNode.insertBefore(new_element, root);
+        root.parentNode.removeChild(root);
+
+        invalidation_count += 1;
+        component.decorate(new_element);
+
+      } else {
+        this.scope_stack_.shift();
+      }
+    } while (component.isInvalidated());
   }
 };
 
