@@ -101,8 +101,8 @@ ian.ServiceContainer.prototype.create = function (Constructor, var_args) {
  * @return {!Array.<string>} A list of dependencies.
  */
 ian.ServiceContainer.prototype.getDependencyList = function (Constructor) {
-  if (Constructor.$inject) {
-    return Constructor.$inject;
+  if (Constructor['$inject']) {
+    return Constructor['$inject'];
   }
 
   var constructor_source = Constructor.toString();
