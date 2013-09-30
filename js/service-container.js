@@ -82,11 +82,6 @@ ian.ServiceContainer.prototype.create = function (Constructor, var_args) {
   var Instantiator = function () {};
   Instantiator.prototype = Constructor.prototype;
 
-  /**
-   * @expose
-   */
-  Instantiator.prototype.$inject = Constructor.prototype.$inject || [];
-
   var instance = new Instantiator();
   var keys = this.getDependencyList(Constructor);
   var services = this.getAll(keys);
