@@ -4,7 +4,7 @@ var fs = require('fs');
 
 module.exports = function (runner, args, callback) {
   var project_dirname = runner.getProjectDirname();
-  var output_filename = runner.getAppConfigValue('output.components');
+  var output_filename = runner.getAppConfigValue('output.component-exports');
   var app_namespaces = runner.getAppConfigValue('namespaces');
   var component_namespaces = runner.getAppConfigValue('namespaces.components');
 
