@@ -1,13 +1,17 @@
 goog.provide('ian.ui.Component');
 
+goog.require('goog.events.EventTarget');
 goog.require('goog.string');
 
 
 /**
  * @constructor
+ * @extends {goog.events.EventTarget}
  * @ngInject
  */
 ian.ui.Component = function () {
+  goog.events.EventTarget.call(this);
+
   /**
    * @type {boolean}
    */
@@ -50,6 +54,8 @@ ian.ui.Component = function () {
   this.in_document_ = false;
 };
 
+goog.inherits(ian.ui.Component, goog.events.EventTarget);
+
 
 ian.ui.Component.prototype.isInitialized = function () {
   return this.$$initialized;
@@ -83,11 +89,15 @@ ian.ui.Component.prototype.setScope = function (scope) {
 
 
 /**
- * @param {string} key A state key.
- * @param {boolean} state The new state value.
+ * @param {string|!Object} key A state key.
+ * @param {boolean=} state The new state value.
  */
 ian.ui.Component.prototype.setState = function (key, state) {
-  this.$state[key] = Boolean(state);
+  if (typeof key === 'string') {
+    this.$state[key] = Boolean(state);
+  } else {
+    this.$state = key;
+  }
 };
 
 
@@ -125,9 +135,34 @@ ian.ui.Component.prototype.exitDocument = function () {
 
 
 /**
+ * @return {boolean} Whether the component is in the document.
+ */
+ian.ui.Component.prototype.isInDocument = function () {
+  return this.in_document_;
+};
+
+
+/**
  * Sets up the inital scope state.
  */
 ian.ui.Component.prototype.init = goog.nullFunction;
+
+
+/**
+ * Returns the component's element.
+ * @return {Element}
+ */
+ian.ui.Component.prototype.getElement = function () {
+  return this.$element;
+};
+
+
+/**
+ * Changes the component's element.
+ */
+ian.ui.Component.prototype.setElement = function (element) {
+  this.$element = element;
+};
 
 
 /**
@@ -149,10 +184,10 @@ ian.ui.Component.prototype.render = function () {
         dom);
   }
 
-  this.$$element = /** @type {!Element} */ (dom);
+  this.$element = /** @type {!Element} */ (dom);
   this.$$invalidated = false;
 
-  return this.$$element;
+  return this.$element;
 };
 
 
@@ -163,6 +198,9 @@ ian.ui.Component.prototype.getTemplate = function () {
 
 ian.ui.Component.prototype.invalidate = function () {
   this.$$invalidated = true;
+
+  var e = new goog.events.Event('invalidate');
+  this.dispatchEvent(e);
 };
 
 

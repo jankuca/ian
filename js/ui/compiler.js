@@ -1,10 +1,12 @@
 goog.provide('ian.ui.Compiler');
 
 goog.require('goog.array');
+goog.require('goog.events.EventHandler');
 goog.require('goog.string');
 goog.require('ian.object');
 goog.require('ian.string');
 goog.require('ian.ui.Component');
+goog.require('ian.ui.ComponentState');
 goog.require('ian.ui.$$components');
 
 
@@ -16,6 +18,11 @@ ian.ui.Compiler = function (services) {
   this.services_ = services;
 
   this.scope_stack_ = [];
+
+  this.invalidated_components_ = [];
+  this.rerender_timeout_ = 0;
+
+  this.handler_ = new goog.events.EventHandler(this);
 };
 
 
@@ -62,9 +69,7 @@ ian.ui.Compiler.prototype.compileSubTree_ = function (root) {
   }
 
   if (!component || !component.$$invalidated) {
-    goog.array.forEach(root.children, function (child) {
-      this.compileSubTree_(child);
-    }, this);
+    this.compileChildren_(root);
   }
 
   if (component) {
@@ -98,6 +103,13 @@ ian.ui.Compiler.prototype.compileSubTree_ = function (root) {
 };
 
 
+ian.ui.Compiler.prototype.compileChildren_ = function (root) {
+  goog.array.forEach(root.children, function (child) {
+    this.compileSubTree_(child);
+  }, this);
+};
+
+
 /**
  * @param {!Element} element The element to compile.
  * @return {ian.ui.Component} component A newly created component.
@@ -124,9 +136,7 @@ ian.ui.Compiler.prototype.compileElement_ = function (element) {
 
     if (component_class_name) {
       var state = this.getStateFromClasses(component_class_name, class_names);
-      for (var state_key in state) {
-        component.setState(state_key, state[state_key]);
-      }
+      component.setState(state);
     }
   }
 
@@ -135,7 +145,7 @@ ian.ui.Compiler.prototype.compileElement_ = function (element) {
 
 
 ian.ui.Compiler.prototype.getStateFromClasses = function (base, classes) {
-  var state = {};
+  var state = new ian.ui.ComponentState();
 
   for (var i = 0, ii = classes.length; i < ii; ++i) {
     var class_name = classes[i];
@@ -194,5 +204,35 @@ ian.ui.Compiler.prototype.createComponentInstance_ = function (Component) {
     component = new Component();
   }
 
+  var handler = this.handler_;
+  handler.listen(component, 'invalidate', this.handleInvalidation_);
+
   return component;
+};
+
+
+ian.ui.Compiler.prototype.handleInvalidation_ = function (e) {
+  var component = e.target;
+  this.invalidated_components_.push(component);
+
+  if (!this.rerender_timeout_) {
+    var rerender = this.rerenderInvalidated_.bind(this);
+    this.rerender_timeout_ = setTimeout(rerender, 0);
+  }
+};
+
+
+ian.ui.Compiler.prototype.rerenderInvalidated_ = function () {
+  var components = this.invalidated_components_;
+
+  var component;
+  while (component = components.shift()) {
+    var old_element = component.getElement();
+    var new_element = component.render();
+
+    this.compileChildren_(new_element);
+
+    old_element.parentNode.replaceChild(new_element, old_element);
+    component.setElement(new_element);
+  }
 };
