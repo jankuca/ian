@@ -60,6 +60,14 @@ function highlightCode(code, scope) {
 
   var expecting_id = false;
   tokens.forEach(function (token, i) {
+    if (i === 0 && token.range[0] !== 0) {
+      ranges.unshift({
+        type: 'comment',
+        index: 0,
+        length: token.range[0]
+      });
+    }
+
     switch (token.type) {
     case 'Keyword':
       if (token.value === 'var' || token.value === 'new') {
@@ -141,6 +149,7 @@ function highlightCode(code, scope) {
   ranges.forEach(function (range) {
     var wrap = [ '', '' ];
     switch (range.type) {
+    case 'comment': wrap[0] = '<small>'; wrap[1] = '</small>'; break;
     case 'id': wrap[0] = '<var>'; wrap[1] = '</var>'; break;
     case 'prototype': wrap[0] = '<small>'; wrap[1] = '</small>'; break;
     case 'constructor': wrap[0] = '<strong>'; wrap[1] = '</strong>'; break;

@@ -39,6 +39,12 @@ small {
   text-transform: lowercase;
 }
 
+abbr,
+acronym {
+  font-family: iABCRegularSC;
+  text-transform: lowercase;
+}
+
 h1 {
   margin: 50px 0 20px;
   font-size: 32px;
@@ -138,10 +144,11 @@ code strong {
 code s,
 code small {
   color: #AAA;
-  font-family: inherit;
+  font-family: Menlo, 'Ubuntu Mono', monospace;
   font-size: 1em;
   font-style: normal;
   text-decoration: none;
+  text-transform: none;
   -webkit-font-smoothing: antialiased;
 }
 

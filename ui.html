@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<meta charset="UTF-8" />
+<title>UI – ian Library Documentation</title>
+
+<link rel="stylesheet" href="./docs/docs.css">
+
+<script src="http://esprima.org/esprima.js"></script>
+<script src="./docs/highlighter.js"></script>
+
+<body>
+<h1>UI</h1>
+
+<p>The UI layer of the <code>ian</code> library allows the interface of an app to be made of (usually) small chunks of functionality called components which are instantiated, rendered, composed and managed by a UI compiler.</p>
+
+<h2 id="getting-started">Getting Started</h2>
+
+<p>Every component has a functionality definition (a JS <i>class</i>) and a template (a JS function which returns a string of <abbr>HTML</abbr>). The UI compiler goes through the  <acronym>DOM</acronym> of the page and checks every element with a class name matching a class in a specified JavaScript namespace. When such an element is encountered, the compiler creates a scope for the new component which inherits from any ancestor component scopes. A scope is simply an object in which a component stores its view data. These objects are used for rendering templates and building the <acronym>DOM</acronym> for each component.</p>
+
+<code>var compiler = new ian.ui.Compiler();
+compiler.init(document);</code>
+
+<p>The whole initial <acronym>DOM</acronym> of the page (or optionally its part) is passed to an uninitialized UI compiler instance. The compiler goes through that <acronym>DOM</acronym> checking for possible component class name matches. The app has to specify a namespace in which the compiler is supposed to look for component constructors.</p>
+
+<code>compiler.init(document, 'app.ui');</code>
+
+<p>In this case, the compiler tries to match selector-cased class names with PascalCased keys in the namespace of <code>app.ui</code>. For instance, when an element with the class name of <code>menu-bar-item</code> is encountered, the compiler looks for <code>app.ui.MenuBarItem</code>. If there is no such constructor, no action is taken and the compiler simply moves over to the next element in the tree.</p>
+
+<p>When a class name matching a component constructor is encountered, an instance of that constructor is created and it is set up with its own scope object which inherits from any parent component scopes in the tree. The component initialization logic is executed right after that and the <acronym>DOM</acronym> element which triggered the component instantiation is set as the element of the component.</p>
+
+<h2 id="class-name-inheritance">Class Name Inheritance</h2>
+
+<p>To simplify the <acronym>DOM</acronym> and the <abbr>HTML</abbr> of the page, a concept of class name inheritance can be implemented. Consider a set of several buttons which differ slightly in their appearance but the logic of their action can be abstracted to a higher level. The elements of these buttons could be named <code>my-button</code>, <code>your-button</code> and <code>original-button</code>. These buttons could likely have a base class name in common (maybe <code>button</code> in this case). The compiler would then ignore the extending class names and created three instances of the <code>Button</code> component.</p>
+
+<p>This inheritance tree can, however, grow quite large in an actual app and having more than three class names on a single element can seem awkward and dirty. Another problem arises when it is desired to actually implement different logic for one of the buttons while keeping the class names the same (as we do not want to change the styling). The application can tell the compiler about the inheritance rules used for styling which can in turn correctly determine the deep-most constructor. It is also very likely that such constructors are going to inherit one from another on the JS side.</p>
+
+<code>var constructor_tree = {
+  'button': {},
+  'my-button': { extends: [ 'button' ] }
+};
+
+compiler.init(document, 'app.ui', constructor_tree);</code>
+
+<p>The recommended way of building these rules is utilizing the provided <strong title="/tasks/rework/components.rework-plugin.js">components</strong> <a href="https://github.com/visionmedia/rework">rework</a> plugin in the build process of an application. The plugin extracts <code>extends</code> properties from CSS which means that the CSS for the aforementioned buttons would be similar to the following.</p>
+
+<code>.button {
+  /* base styles */
+}
+
+.my-button {
+  extends: .button;
+  /* other styles */
+}
+
+.your-button {
+  extends: .button;
+  /* other styles */
+}
+
+.original-button {
+  extends: .button;
+  /* other styles */
+}</code>
+
+<p>If the application also uses the default <em>inheritance</em> plugin that comes together with rework, the <code>extends: .button;</code> declaration should also be specify this relationship for the other buttons (as shown above) even if it is not utilized on the JavaScript side. The HTML would then contain only one class name for each element:</p>
+
+<code>&lt;a class="my-button"&gt;My Button&lt;/a&gt;
+&lt;a class="your-button"&gt;My Button&lt;/a&gt;
+&lt;a class="original-button"&gt;My Button&lt;/a&gt;</code>
+
+<h2 id="templates">Templates</h2>
+
+<p>Every component can have a template whose rendering replaces the original <acronym>DOM</acronym> element of the component. The template is really just a function which takes the component scope as its argument and returns a string of <abbr>HTML</abbr> that gets converted to an actual <acronym>DOM</acronym> structure. Templates can loop over collections or contain conditionally rendered parts</p>
+
+<p>The recommended template format is of course <strong>soy</strong> which can be compiled into simple JavaScript functions via the <a href="http://developers.google.com/closure/templates">Google Closure Templates</a> engine or the lightweight <a href="https://github.com/jankuca/node-soy">node-soy</a> engine. An example of a template:</p>
+
+<code><small>{namespace <strong>app.ui.templates</strong>}</small>
+
+<small>{template <strong>.MenuBar</strong>}</small>
+  &lt;ul class="menu-bar"&gt;
+    <small>{foreach <strong>$item</strong> in <strong>$menu</strong>}</small>
+    &lt;li class="menu-bar-item"&gt;
+      &lt;a href="<small>{<strong>$item.link</strong>}</small>"&gt;<small>{<strong>$item.label</strong>}</small>&lt;/a&gt;
+    &lt;/li&gt;
+    <small>{/foreach}</small>
+  &lt;/ul&gt;
+<small>{/template}</small>
+</code>
+
+<p>To pair a component definition with a template, one needs to either define the <code>template</code> property (recommended) of the component or override its <code>getTemplate()</code> method.</p>
+
+<h2 id="component-lifetime">Component Lifetime</h2>
+
+<p>The component is initialized by the compiler with a <em>scope</em> object and a <em>component state</em> object stored in the <code>$scope</code> and <code>$state</code> properties respectively. The initialization logic contained in its <code>init</code> method is executed. Right after that, a <acronym>DOM</acronym> element is paired with the component and stored in its <code>$element</code> property. The component can then decorate the element with logic contained in its <code>apply</code> method.</p>
+
+<code>/**
+ * @constructor
+ * @extends {ian.ui.Component}
+ */
+var Button = function () {
+  ian.ui.Component.call(this);
+
+  this.template = app.ui.templates.Button;
+};
+
+goog.inherits(Button, ian.ui.Component);
+
+Button.prototype.init = function () {
+  this.$scope.label = 'Download';
+};
+
+Button.prototype.apply = function () {
+  goog.dom.setTextContent(this.$element, this.$scope.label);
+};
+</code>
+
+<h2 id="component-state">Component State</h2>
+
+<p>There is a <strong>component state</strong> object created for every component in the tree which contains information about the state of the component. A state can be for instance “This button is pressed.” or “This menu bar item is active.” and it has to be represented by a class name based upon the class name of the component. The compiler automatically parses the initial state of the component from the <acronym>DOM</acronym> element and updates </p>
+
+<p>To give an example, consider a menu item component which is defined as the <code>MenuBarItem</code> constructor paired with the <code>menu-bar-item</code> class name. The <code>active</code> state class name would be <code>menu-bar-item-active</code>.</p>
+
+<h2 id="dom-updates">DOM Updates</h2>
+
+<p>There are basically two ways how an application can update the <acronym>DOM</acronym>&mdash;modifying individual element contents or rerendering a whole subtree.</p>
+
+<p>The <code>apply()</code> methods of components are supposed to take care of modifying existing <acronym>DOM</acronym> structures. If, however, a larger change to the <acronym>DOM</acronym> is required for new data to be rendered and the template is the only part of the system able to contain such logic (e.g. a new collection item needs to be added or conditional parts of the template are needed), the whole template is reevaluated, the resulting <abbr>HTML</abbr> is converted to a <acronym>DOM</acronym> structure and replaced into the the place of the old component <acronym>DOM</acronym> subtree.</p>
+
+<p>To request a template reevaluation, the component needs to invalidate itself by calling its <code>invalidate()</code> method. The component in turn emits a <code>invalidate</code> event which is intercepted by the compiler. The compiler then asynchronously asks for new renderings of invalidated components' template and replaces them into the <acronym>DOM</acronym> of the page.</p>
+
+<code>MenuBar.prototype.init = function () {
+  var self = this;
+  api.getData(function (data) {
+    self.$scope['items'] = data['items'];
+    self.invalidate();
+  });
+};</code>
