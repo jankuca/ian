@@ -223,6 +223,8 @@ ian.ui.Compiler.prototype.handleInvalidation_ = function (e) {
 
 
 ian.ui.Compiler.prototype.rerenderInvalidated_ = function () {
+  this.rerender_timeout_ = 0;
+
   var components = this.invalidated_components_;
 
   var component;
