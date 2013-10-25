@@ -44,6 +44,34 @@ ian.ui.Compiler.prototype.init = function (root, namespace) {
 };
 
 
+/**
+ * @param {!Node} old_node The element to replace.
+ * @param {!Node} new_node The replacement.
+ */
+ian.ui.Compiler.prototype.replaceSubtree = function (old_node, new_node) {
+  var parent_node = old_node.parentNode;
+  parent_node.replaceChild(new_node, old_node);
+
+  // TODO: Is there a memory leak? (the components in the old subtree)
+  // TODO: Clean $children of parent components.
+
+  this.compileSubTree_(new_node);
+};
+
+
+/**
+ * @param {!Node} subtree The element to insert.
+ * @param {!Element} parent_node The container to insert the element into.
+ */
+ian.ui.Compiler.prototype.insertSubtreeInto = function (subtree, parent_node) {
+  parent_node.appendChild(subtree);
+
+  // TODO: populate parent $children
+
+  this.compileSubTree_(subtree);
+};
+
+
 ian.ui.Compiler.prototype.getComponentDefinitions_ = function () {
   var namespace = this.namespace_;
   var defs = goog.global;
