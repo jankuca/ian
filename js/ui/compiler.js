@@ -131,10 +131,15 @@ ian.ui.Compiler.prototype.compileSubTree_ = function (root) {
 };
 
 
+/**
+ * @param {!Document|Element}
+ */
 ian.ui.Compiler.prototype.compileChildren_ = function (root) {
-  goog.array.forEach(root.children, function (child) {
-    this.compileSubTree_(child);
-  }, this);
+  if (root.nodeType === goog.dom.NodeType.DOCUMENT) {
+    root = root.documentElement;
+  }
+
+  goog.array.forEach(root.children, this.compileSubTree_, this);
 };
 
 
