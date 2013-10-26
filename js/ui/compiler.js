@@ -263,6 +263,6 @@ ian.ui.Compiler.prototype.rerenderInvalidated_ = function () {
     this.compileChildren_(new_element);
 
     old_element.parentNode.replaceChild(new_element, old_element);
-    component.setElement(new_element);
+    component.decorate(new_element);
   }
 };
