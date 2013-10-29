@@ -109,12 +109,14 @@ ian.ui.Component.prototype.setScope = function (scope) {
 ian.ui.Component.prototype.setState = function (key, state) {
   if (typeof key === 'string') {
     this.$state[key] = Boolean(state);
-    this.updateStateClass_(key, state);
+    if (goog.isDef(state)) {
+      this.updateStateClass_(key, state);
+    }
   } else {
     var states = key;
-    for (var key in states) {
-      if (goog.isString(key)) {
-        this.setState(key, states[key]);
+    for (var k in states) {
+      if (goog.isString(k)) {
+        this.setState(k, states[k]);
       }
     }
   }
