@@ -132,7 +132,7 @@ ian.ui.Compiler.prototype.compileSubTree_ = function (root) {
 
 
 /**
- * @param {!Document|Element}
+ * @param {!Document|Element} root
  */
 ian.ui.Compiler.prototype.compileChildren_ = function (root) {
   if (root.nodeType === goog.dom.NodeType.DOCUMENT) {
@@ -169,6 +169,7 @@ ian.ui.Compiler.prototype.compileElement_ = function (element) {
 
     if (component_class_name) {
       var state = this.getStateFromClasses(component_class_name, class_names);
+      component.setName(component_class_name);
       component.setState(state);
     }
   }
@@ -268,6 +269,6 @@ ian.ui.Compiler.prototype.rerenderInvalidated_ = function () {
     this.compileChildren_(new_element);
 
     old_element.parentNode.replaceChild(new_element, old_element);
-    component.setElement(new_element);
+    component.decorate(new_element);
   }
 };
