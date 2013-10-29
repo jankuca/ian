@@ -123,6 +123,14 @@ ian.ui.Component.prototype.setState = function (key, state) {
 
 /**
  * @param {string} key A state key.
+ */
+ian.ui.Component.prototype.toggleState = function (key) {
+  this.setState(key, !this.$state[key]);
+};
+
+
+/**
+ * @param {string} key A state key.
  * @param {boolean} state The new state value.
  */
 ian.ui.Component.prototype.updateStateClass_ = function (key, state) {
