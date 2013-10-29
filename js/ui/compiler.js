@@ -132,7 +132,7 @@ ian.ui.Compiler.prototype.compileSubTree_ = function (root) {
 
 
 /**
- * @param {!Document|Element}
+ * @param {!Document|Element} root
  */
 ian.ui.Compiler.prototype.compileChildren_ = function (root) {
   if (root.nodeType === goog.dom.NodeType.DOCUMENT) {
