@@ -8,7 +8,7 @@ module.exports = function (output_filename) {
     var components = {};
 
     style.rules.forEach(function (rule) {
-      if (rule.type === 'comment') return;
+      if (!rule.selectors) return;
 
       rule.selectors.forEach(function (selector) {
         if (selector[0] !== '.' || !/^\S+$/.test(selector)) return;
