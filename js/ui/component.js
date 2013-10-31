@@ -18,7 +18,7 @@ ian.ui.Component = function () {
   this.$$initialized = false;
 
   /**
-   * Whether the compiler should request a new rendering.
+   * Whether the component needs to be rerendered.
    * @type {boolean}
    */
   this.$$invalidated = false;
@@ -175,7 +175,7 @@ ian.ui.Component.prototype.render = function () {
     throw new Error('Missing component template');
   }
 
-  var html = template(this.$scope);
+  var html = template(this.$scope, {});
   html = goog.string.trim(html);
 
   var dom = goog.dom.htmlToDocumentFragment(html);
@@ -212,4 +212,8 @@ ian.ui.Component.prototype.isInvalidated = function () {
 /**
  * Updates the DOM with the current data.
  */
-ian.ui.Component.prototype.apply = goog.nullFunction;
+ian.ui.Component.prototype.apply = function () {
+  if (!this.isInDocument() && this.$element.childNodes.length === 0) {
+    this.invalidate();
+  }
+};

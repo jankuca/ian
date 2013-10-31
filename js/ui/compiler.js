@@ -115,8 +115,6 @@ ian.ui.Compiler.prototype.compileSubTree_ = function (root) {
           'Maximum of 10 synchronous invalidations for a component reached');
       }
 
-      component.decorate(root);
-
       if (component.isInvalidated()) {
         var new_element = component.render();
         root.parentNode.insertBefore(new_element, root);
@@ -124,8 +122,10 @@ ian.ui.Compiler.prototype.compileSubTree_ = function (root) {
 
         invalidation_count += 1;
         component.decorate(new_element);
+        root = new_element;
 
       } else {
+        component.decorate(root);
         this.scope_stack_.shift();
       }
     } while (component.isInvalidated());
