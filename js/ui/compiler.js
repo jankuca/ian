@@ -134,7 +134,7 @@ ian.ui.Compiler.prototype.compileSubTree_ = function (root) {
 
 
 /**
- * @param {!Document|Element}
+ * @param {!Document|Element} root
  */
 ian.ui.Compiler.prototype.compileChildren_ = function (root) {
   if (root.nodeType === goog.dom.NodeType.DOCUMENT) {
@@ -171,6 +171,7 @@ ian.ui.Compiler.prototype.compileElement_ = function (element) {
 
     if (component_class_name) {
       var state = this.getStateFromClasses(component_class_name, class_names);
+      component.setName(component_class_name);
       component.setState(state);
     }
   }

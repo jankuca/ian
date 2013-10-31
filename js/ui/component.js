@@ -24,6 +24,11 @@ ian.ui.Component = function () {
   this.$$invalidated = false;
 
   /**
+   * @type {string}
+   */
+  this.$name = "";
+
+  /**
    * @type {Element}
    */
   this.$element = null;
@@ -68,6 +73,14 @@ ian.ui.Component.prototype.setInitialized = function () {
 
 
 /**
+ * @param {string} name Component name in kebab-case.
+ */
+ian.ui.Component.prototype.setName = function (name) {
+  this.$name = name;
+};
+
+
+/**
  * @param {!Element} element The element the component should be decorating.
  */
 ian.ui.Component.prototype.decorate = function (element) {
@@ -96,8 +109,41 @@ ian.ui.Component.prototype.setScope = function (scope) {
 ian.ui.Component.prototype.setState = function (key, state) {
   if (typeof key === 'string') {
     this.$state[key] = Boolean(state);
+    if (goog.isDef(state)) {
+      this.updateStateClass_(key, state);
+    }
   } else {
-    this.$state = key;
+    var states = key;
+    for (var k in states) {
+      if (goog.isString(k)) {
+        this.setState(k, states[k]);
+      }
+    }
+  }
+};
+
+
+/**
+ * @param {string} key A state key.
+ */
+ian.ui.Component.prototype.toggleState = function (key) {
+  this.setState(key, !this.$state[key]);
+};
+
+
+/**
+ * @param {string} key A state key.
+ * @param {boolean} state The new state value.
+ */
+ian.ui.Component.prototype.updateStateClass_ = function (key, state) {
+  if (this.$element) {
+    var className = this.$name + '-' + key;
+
+    if (state) {
+      goog.dom.classes.add(this.$element, className);
+    } else {
+      goog.dom.classes.remove(this.$element, className);
+    }
   }
 };
 
