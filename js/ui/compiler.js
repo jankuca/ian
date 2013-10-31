@@ -93,7 +93,9 @@ ian.ui.Compiler.prototype.compileSubTree_ = function (root) {
 
   if (goog.dom.isElement(root) && !root.hasAttribute('data-component')) {
     component = this.compileElement_(root);
-    root.setAttribute('data-component', '');
+    if (component) {
+      root.setAttribute('data-component', '');
+    }
   }
 
   if (!component || !component.$$invalidated) {
