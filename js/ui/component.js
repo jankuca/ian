@@ -73,6 +73,7 @@ ian.ui.Component.prototype.setInitialized = function () {
 ian.ui.Component.prototype.decorate = function (element) {
   this.$element = element;
   this.apply();
+  this.enterDocument();
 };
 
 
