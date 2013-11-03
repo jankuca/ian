@@ -150,32 +150,46 @@ ian.ui.Compiler.prototype.compileChildren_ = function (root) {
  * @return {ian.ui.Component} component A newly created component.
  */
 ian.ui.Compiler.prototype.compileElement_ = function (element) {
-  var defs = this.definitions_;
   var component = null;
 
   var class_name_attr = element.className;
   if (class_name_attr) {
-    var component_class_name;
+    var base_class_name = this.getComponentBaseClassName_(element);
+    if (base_class_name) {
+      var constructor_name = ian.string.toPascalCase(base_class_name);
+      component = this.createComponent_(constructor_name, element);
 
-    var class_names = goog.string.trim(class_name_attr).split(/\s+/);
-    for (var i = 0; i < class_names.length; ++i) {
-      var constructor_name = ian.string.toPascalCase(class_names[i]);
-      if (defs[constructor_name]) {
-        component_class_name = class_names[i];
-        class_names.splice(i, 1);
-        i -= 1;
-        component = this.createComponent_(constructor_name, element);
-        break;
-      }
-    }
-
-    if (component_class_name) {
-      var state = this.getStateFromClasses(component_class_name, class_names);
+      var class_names = goog.string.trim(element.className).split(/\s+/);
+      var state = this.getStateFromClasses(base_class_name, class_names);
       component.setState(state);
     }
   }
 
   return component;
+};
+
+
+ian.ui.Compiler.prototype.getComponentBaseClassName_ = function (element) {
+  var class_name_attr = element.className;
+  if (!class_name_attr) {
+    return null;
+  }
+
+  var base_class_name = null;
+  var defs = this.definitions_;
+
+  var class_names = goog.string.trim(class_name_attr).split(/\s+/);
+  for (var i = 0; i < class_names.length; ++i) {
+    var constructor_name = ian.string.toPascalCase(class_names[i]);
+    if (defs[constructor_name]) {
+      base_class_name = class_names[i];
+      class_names.splice(i, 1);
+      i -= 1;
+      break;
+    }
+  }
+
+  return base_class_name;
 };
 
 
@@ -241,6 +255,7 @@ ian.ui.Compiler.prototype.createComponentInstance_ = function (Component) {
 
   var handler = this.handler_;
   handler.listen(component, 'invalidate', this.handleInvalidation_);
+  handler.listen(component, 'statechange', this.handleStateChange_);
 
   return component;
 };
@@ -272,4 +287,33 @@ ian.ui.Compiler.prototype.rerenderInvalidated_ = function () {
     old_element.parentNode.replaceChild(new_element, old_element);
     component.decorate(new_element);
   }
+};
+
+
+ian.ui.Compiler.prototype.handleStateChange_ = function (e) {
+  var component = e.target;
+  var element = component.getElement();
+  if (!element) {
+    return;
+  }
+
+  var base_class_name = this.getComponentBaseClassName_(element);
+  if (!base_class_name) {
+    throw new Error('Component base class name has been removed in runtime');
+  }
+
+  var class_names = goog.string.trim(element.className).split(/\s+/);
+  var old_state = this.getStateFromClasses(base_class_name, class_names);
+
+  var diff = old_state.getDifference(component.getState());
+  goog.object.forEach(diff, function (value, state_key) {
+    if (diff.hasOwnProperty(state_key)) {
+      var class_name = base_class_name + '-' + state_key;
+      if (value) {
+        goog.dom.classes.add(element, class_name);
+      } else {
+        goog.dom.classes.remove(element, class_name);
+      }
+    }
+  });
 };
