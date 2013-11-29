@@ -98,18 +98,13 @@ ian.ApplicationDelegate.prototype.getControllerByKey = function (key) {
   var controller = this.instances_[key];
   if (!controller) {
     var Controller = this.constructors_[key];
-    if (Controller) {
-      var cfg = this.cfg_;
-      if (this.$services) {
-        controller = this.$services.create(Controller, this.$router, cfg);
-      } else {
-        controller = new Controller(this.$router, cfg);
-      }
-      controller.$session = this.$session;
-      controller.init();
-    } else {
+    if (!Controller) {
       throw new Error('No such controller "' + key + '"');
     }
+
+    controller = this.createController(Controller);
+    controller.$session = this.$session;
+    controller.init();
   }
 
   if (controller) {
@@ -117,4 +112,22 @@ ian.ApplicationDelegate.prototype.getControllerByKey = function (key) {
   }
 
   return controller || null;
+};
+
+
+/**
+ * @return {!ian.Controller}
+ */
+ian.ApplicationDelegate.prototype.createController = function (Controller) {
+  var router = this.$router;
+  var cfg = this.cfg_;
+
+  var controller;
+  if (this.$services) {
+    controller = this.$services.create(Controller, router, cfg);
+  } else {
+    controller = new Controller(router, cfg);
+  }
+
+  return controller;
 };
