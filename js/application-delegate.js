@@ -64,7 +64,7 @@ ian.ApplicationDelegate.prototype.handleRoute_ = function (e) {
 
   this.beforeControllerChange(current_controller, controller);
 
-  this.current_controller = controller;
+  this.current_controller_ = controller;
   this.navigateToController(controller, action_key, state.params);
 
   this.afterControllerChange(current_controller, controller);
