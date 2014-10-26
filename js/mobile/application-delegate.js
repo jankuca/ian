@@ -45,10 +45,7 @@ ian.mobile.ApplicationDelegate.prototype.beforeControllerChange =
       this.root_view_.removeChild(current_view);
     }
   }
-};
 
-ian.mobile.ApplicationDelegate.prototype.afterControllerChange =
-    function (old_controller, new_controller) {
   if (old_controller !== new_controller) {
     var view = new_controller.getView();
     if (view) {
