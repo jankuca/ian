@@ -4,9 +4,8 @@ goog.provide('ian.Controller');
 /**
  * @constructor
  * @param {!ian.Router} router A router.
- * @param {!Object.<string, *>} cfg App configuration.
  */
-ian.Controller = function (router, cfg) {
+ian.Controller = function (router) {
   this.$router = router;
 
   this.dom_ = null;

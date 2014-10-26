@@ -7,10 +7,9 @@ goog.require('ian.Controller');
  * @constructor
  * @extends {ian.Controller}
  * @param {!ian.Router} router A router.
- * @param {!Object.<string, *>} cfg App configuration.
  */
-ian.mobile.Controller = function (router, cfg) {
-  ian.Controller.call(this, router, cfg);
+ian.mobile.Controller = function (router) {
+  ian.Controller.call(this, router);
 
   this.view_ = null;
 };
