@@ -17,15 +17,21 @@ ian.History = function (win) {
   this.$location = this.$window.location;
 
   this.shimmed = !goog.isFunction(this.$history.pushState);
-
   if (this.shimmed) {
-    this.handler = new goog.events.EventHandler(this);
-    this.handler.listen(this.$window, 'hashchange', this.handleHashChange_);
+    this.forceShim();
   }
 
   this.stack_ = [];
 
   this.state = null;
+};
+
+
+ian.History.prototype.forceShim = function () {
+  this.shimmed = true;
+
+  this.handler = new goog.events.EventHandler(this);
+  this.handler.listen(this.$window, 'hashchange', this.handleHashChange_);
 };
 
 
