@@ -39,6 +39,7 @@ ian.ApplicationDelegate.prototype.setConstructors = function (constructors) {
 
 ian.ApplicationDelegate.prototype.init = function () {
   this.$handler.listen(this.$router, 'statechange', this.handleRoute_);
+  this.$router.init();
 };
 
 
