@@ -9,6 +9,7 @@ goog.provide('ian.Controller');
 ian.Controller = function (router, cfg) {
   this.$router = router;
 
+  this.dom_ = null;
   this.handler_ = null;
 };
 
@@ -20,6 +21,14 @@ ian.Controller.prototype.init = function () {
 
 ian.Controller.prototype.navigate = function (action, params) {
   // override this
+};
+
+
+ian.Controller.prototype.getDomHelper = function () {
+  if (!this.dom_) {
+    this.dom_ = goog.dom.getDomHelper();
+  }
+  return this.dom_;
 };
 
 
