@@ -43,6 +43,8 @@ ian.Router = function (history, location, mouse_handler, touch_handler) {
    * @type {string}
    */
   this.base = '/';
+
+  this.routes_ = {};
 };
 
 goog.inherits(ian.Router, goog.events.EventTarget);
@@ -52,7 +54,7 @@ goog.inherits(ian.Router, goog.events.EventTarget);
  * @param {!Object.<string, string>} routes A route map.
  */
 ian.Router.prototype.setRoutes = function (routes) {
-  this.routes = this.parseRoutes_(routes);
+  this.routes_ = this.parseRoutes_(routes);
 };
 
 
@@ -292,7 +294,7 @@ ian.Router.prototype.emitCurrentState_ = function () {
 ian.Router.prototype.getRouteByTargetAndParams = function (target, params) {
   var param_keys = goog.object.getKeys(params);
 
-  var routes = this.routes;
+  var routes = this.routes_;
   var candidates = routes.filter(function (route) {
     if (route.target === target) {
       return goog.array.every(route.param_keys, function (key) {
@@ -326,7 +328,7 @@ ian.Router.prototype.createStateForPath_ = function (path) {
   var pathname = parts[0];
   var query_string = parts.slice(1).join('?');
 
-  var routes = this.routes;
+  var routes = this.routes_;
   for (var i = 0, ii = routes.length; i < ii; ++i) {
     var route = routes[i];
     var match = pathname.match(route.rx);
