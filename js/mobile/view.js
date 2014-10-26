@@ -2,24 +2,21 @@ goog.provide('ian.mobile.View');
 
 goog.require('goog.array');
 goog.require('goog.dom.classes');
-goog.require('ian.View');
+goog.require('goog.ui.Component');
 
 
 /**
  * @constructor
- * @extends {ian.View}
- * @param {(string|function():string)=} template A view template to use.
+ * @extends {goog.ui.Component}
  */
-ian.mobile.View = function (template) {
-  ian.View.call(this);
-
-  this.element = this.createElementFromTemplate_(template);
+ian.mobile.View = function () {
+  goog.ui.Component.call(this);
 
   this.in_transition_ = false;
   this.transition_timeout_ = 0;
 };
 
-goog.inherits(ian.mobile.View, ian.View);
+goog.inherits(ian.mobile.View, goog.ui.Component);
 
 
 ian.mobile.View.prototype.dispose = function () {
@@ -53,43 +50,53 @@ ian.mobile.View.prototype.onTransitionEnd = function () {
 
 
 ian.mobile.View.prototype.slideLeft = function () {
-  goog.dom.classes.add(this.element, 'slide');
-  goog.dom.classes.remove(this.element, 'right');
-  goog.dom.classes.add(this.element, 'left');
+  var element = this.getElement();
+
+  goog.dom.classes.add(element, 'slide');
+  goog.dom.classes.remove(element, 'right');
+  goog.dom.classes.add(element, 'left');
 
   this.beInTransitionFor(500);
 };
 
 
 ian.mobile.View.prototype.slideRight = function () {
-  goog.dom.classes.add(this.element, 'slide');
-  goog.dom.classes.remove(this.element, 'left');
-  goog.dom.classes.add(this.element, 'right');
+  var element = this.getElement();
+
+  goog.dom.classes.add(element, 'slide');
+  goog.dom.classes.remove(element, 'left');
+  goog.dom.classes.add(element, 'right');
 
   this.beInTransitionFor(500);
 };
 
 
 ian.mobile.View.prototype.slideIn = function () {
-  goog.dom.classes.add(this.element, 'slide');
-  goog.dom.classes.remove(this.element, 'left');
-  goog.dom.classes.remove(this.element, 'right');
+  var element = this.getElement();
+
+  goog.dom.classes.add(element, 'slide');
+  goog.dom.classes.remove(element, 'left');
+  goog.dom.classes.remove(element, 'right');
 
   this.beInTransitionFor(500);
 };
 
 
 ian.mobile.View.prototype.fadeOut = function () {
-  goog.dom.classes.add(this.element, 'fade');
-  goog.dom.classes.remove(this.element, 'in');
+  var element = this.getElement();
+
+  goog.dom.classes.add(element, 'fade');
+  goog.dom.classes.remove(element, 'in');
 
   this.beInTransitionFor(500);
 };
 
 
 ian.mobile.View.prototype.fadeIn = function () {
-  goog.dom.classes.add(this.element, 'fade');
-  goog.dom.classes.add(this.element, 'in');
+  var element = this.getElement();
+
+  goog.dom.classes.add(element, 'fade');
+  goog.dom.classes.add(element, 'in');
 
   this.beInTransitionFor(500);
 };
