@@ -1,18 +1,16 @@
 goog.provide('ian.ApplicationDelegate');
 
-goog.require('ian.ServiceContainer');
-
 
 /**
  * @constructor
  * @param {!ian.Router} router A router.
- * @param {!ian.ServiceContainer=} services A service container to use
+ * @param {!ian.IocContainer=} ioc A service container to use
  *   for controller construction.
  * @param {Object.<string, *>=} cfg App configuration.
  */
-ian.ApplicationDelegate = function (router, services, cfg) {
+ian.ApplicationDelegate = function (router, ioc, cfg) {
   this.$router = router;
-  this.$services = services;
+  this.$ioc = ioc;
   this.cfg_ = cfg || {};
 
   this.$handler = new goog.events.EventHandler(this);
@@ -123,8 +121,8 @@ ian.ApplicationDelegate.prototype.createController = function (Controller) {
   var cfg = this.cfg_;
 
   var controller;
-  if (this.$services) {
-    controller = this.$services.create(Controller, router, cfg);
+  if (this.$ioc) {
+    controller = this.$ioc.create(Controller);
   } else {
     controller = new Controller(router, cfg);
   }

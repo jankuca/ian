@@ -8,14 +8,14 @@ goog.require('ian.ApplicationDelegate');
  * @constructor
  * @extends {ian.ApplicationDelegate}
  * @param {!ian.Router} router A router.
- * @param {!ian.ServiceContainer=} services A service container to use
+ * @param {!ian.IocContainer=} ioc The IoC container to use
  *   for controller construction.
  * @param {Object.<string, *>=} cfg App configuration.
  */
-ian.mobile.ApplicationDelegate = function (router, services, cfg) {
+ian.mobile.ApplicationDelegate = function (router, ioc, cfg) {
   this.root_view_ = null;
 
-  ian.ApplicationDelegate.call(this, router, services, cfg);
+  ian.ApplicationDelegate.call(this, router, ioc, cfg);
 };
 
 goog.inherits(ian.mobile.ApplicationDelegate, ian.ApplicationDelegate);
