@@ -8,18 +8,27 @@ goog.require('ian.mobile.View');
  * @constructor
  * @extends {ian.mobile.View}
  */
-ian.mobile.Form = function (template) {
-  ian.mobile.View.call(this, template);
+ian.mobile.Form = function () {
+  ian.mobile.View.call(this);
 };
 
 goog.inherits(ian.mobile.Form, ian.mobile.View);
+
+
+ian.mobile.Form.prototype.createDom = function () {
+  var dom = this.getDomHelper();
+  var element = dom.createElement('form');
+
+  this.setElementInternal(element);
+};
 
 
 ian.mobile.Form.prototype.enterDocument = function () {
   goog.base(this, 'enterDocument');
 
   var handler = this.getHandler();
-  handler.listen(this.element, 'submit', this.handleSubmit);
+  var element = this.getElement();
+  handler.listen(element, 'submit', this.handleSubmit);
 };
 
 
@@ -27,7 +36,8 @@ ian.mobile.Form.prototype.exitDocument = function () {
   goog.base(this, 'exitDocument');
 
   var handler = this.getHandler();
-  handler.unlisten(this.element, 'submit', this.handleSubmit);
+  var element = this.getElement();
+  handler.unlisten(element, 'submit', this.handleSubmit);
 };
 
 

@@ -1,6 +1,7 @@
 goog.provide('ian.mobile.NavigationController');
 
 goog.require('ian.mobile.NavigationBar');
+goog.require('ian.mobile.NavigationItem');
 goog.require('ian.mobile.View');
 
 
@@ -8,27 +9,39 @@ goog.require('ian.mobile.View');
  * @constructor
  * @extends {ian.mobile.View}
  */
-ian.mobile.NavigationController = function (template) {
-  ian.mobile.View.call(this, template);
+ian.mobile.NavigationController = function () {
+  ian.mobile.View.call(this);
 
   this.navigation_bar = null;
   this.toolbar = null;
   this.views = [];
 
   this.view_stack_element_ = null;
-
-  this.init();
 };
 
 goog.inherits(ian.mobile.NavigationController, ian.mobile.View);
 
 
-ian.mobile.NavigationController.prototype.init = function () {
+ian.mobile.NavigationController.prototype.createDom = function () {
   var dom = this.getDomHelper();
-  var element = this.element;
+  var element = dom.createDom('div', {
+    'class': 'ui-navigation-controller'
+  });
 
-  var navigation_bar = new ian.mobile.NavigationBar(ian.mobile.templates.NavigationBar);
-  this.setNavigationBar(navigation_bar);
+  this.setElementInternal(element);
+};
+
+
+ian.mobile.NavigationController.prototype.appendNavigationBar_ = function () {
+  if (!this.navigation_bar) {
+    return;
+  }
+
+  var bar_element = this.navigation_bar.getElement();
+  if (bar_element) {
+    var element = this.getElement();
+    element.insertBefore(bar_element, element.firstChild);
+  }
 };
 
 
@@ -37,16 +50,19 @@ ian.mobile.NavigationController.prototype.init = function () {
  */
 ian.mobile.NavigationController.prototype.setNavigationBar = function (bar) {
   var handler = this.getHandler();
+  var element = this.getElement();
 
   if (this.navigation_bar) {
-    this.element.removeChild(this.navigation_bar.element);
+    if (element) {
+      element.removeChild(this.navigation_bar.getElement());
+    }
     handler.unlisten(this.navigation_bar, 'back', this.handleBackButtonClick_);
   }
 
   this.navigation_bar = bar;
+  this.addChild(bar, true);
 
   if (bar) {
-    this.element.insertBefore(bar.element, this.element.firstChild);
     handler.listen(this.navigation_bar, 'back', this.handleBackButtonClick_);
   }
 };
@@ -56,35 +72,43 @@ ian.mobile.NavigationController.prototype.setNavigationBar = function (bar) {
  * @param {!ian.mobile.View} toolbar The new toolbar view.
  */
 ian.mobile.NavigationController.prototype.setToolbar = function (toolbar) {
+  var element = this.getElement();
+
   if (this.toolbar) {
-    this.element.removeChild(this.toolbar.element);
+    element.removeChild(this.toolbar.getElement());
   }
 
   this.toolbar = toolbar;
 
   if (toolbar) {
-    this.element.appendChild(toolbar.element);
+    element.appendChild(toolbar.getElement());
   }
 };
 
 
+/**
+ * @param {!ian.mobile.NavigationView} view The view to add.
+ * @param {boolean=} immediate Whether to immediately show the view.
+ */
 ian.mobile.NavigationController.prototype.pushView = function (view, immediate) {
   var current_view = goog.array.peek(this.views);
 
   this.views.push(view);
 
-  var navigation_item = view.navigation_item;
-  if (current_view) {
-    navigation_item = navigation_item || current_view.navigation_item;
+  if (this.navigation_bar) {
+    var navigation_item = view.navigation_item;
+    if (current_view) {
+      navigation_item = navigation_item || current_view.navigation_item;
+    }
+    navigation_item = navigation_item || new ian.mobile.NavigationItem();
+    this.navigation_bar.pushNavigationItem(navigation_item, immediate);
   }
-  navigation_item = navigation_item || new ian.mobile.NavigationItem();
-  this.navigation_bar.pushNavigationItem(navigation_item, immediate);
 
   if (current_view && !immediate) {
     view.slideRight();
   }
 
-  this.addSubview(view);
+  this.addChild(view, true);
 
   setTimeout(function () {
     if (current_view && !immediate) {
@@ -95,12 +119,20 @@ ian.mobile.NavigationController.prototype.pushView = function (view, immediate) 
 };
 
 
+/**
+ * @param {boolean=} immediate Whether to immediately remove the view from DOM.
+ */
 ian.mobile.NavigationController.prototype.popView = function (immediate) {
   var current_view = this.views.pop();
+  if (!current_view) {
+    return;
+  }
+
+  if (this.navigation_bar) {
+    this.navigation_bar.popNavigationItem(immediate);
+  }
+
   var prev_view = goog.array.peek(this.views);
-
-  this.navigation_bar.popNavigationItem(immediate);
-
   if (prev_view) {
     if (!immediate) {
       current_view.slideRight();

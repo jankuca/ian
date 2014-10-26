@@ -11,8 +11,8 @@ goog.require('ian.mobile.View');
  * @constructor
  * @extends {ian.mobile.View}
  */
-ian.mobile.NavigationBar = function (template) {
-  ian.mobile.View.call(this, template);
+ian.mobile.NavigationBar = function () {
+  ian.mobile.View.call(this);
 
   this.current_navigation_item_ = null;
   this.navigation_items_ = [];
@@ -21,6 +21,16 @@ ian.mobile.NavigationBar = function (template) {
 };
 
 goog.inherits(ian.mobile.NavigationBar, ian.mobile.View);
+
+
+ian.mobile.NavigationBar.prototype.createDom = function () {
+  var dom = this.getDomHelper();
+  var element = dom.createDom('div', {
+    'class': 'ui-navigation-bar'
+  });
+
+  this.setElementInternal(element);
+};
 
 
 /**
@@ -34,7 +44,7 @@ ian.mobile.NavigationBar.prototype.pushNavigationItem = function (item, immediat
   this.current_navigation_item_ = item;
 
   if (item.title && (!current_item || item.title !== current_item.title)) {
-    var title = new ian.mobile.NavigationBarTitle(ian.mobile.templates.NavigationBarTitle);
+    var title = new ian.mobile.NavigationBarTitle();
     title.setText(item.title);
     this.pushTitle_(title, immediate);
   }
@@ -45,7 +55,7 @@ ian.mobile.NavigationBar.prototype.pushNavigationItem = function (item, immediat
       back_button_label = '';
     }
 
-    var back_button = new ian.mobile.Button(ian.mobile.templates.BackButton);
+    var back_button = new ian.mobile.Button();
     if (back_button_label) {
       back_button.setLabel(back_button_label);
     }
@@ -63,6 +73,10 @@ ian.mobile.NavigationBar.prototype.pushNavigationItem = function (item, immediat
  */
 ian.mobile.NavigationBar.prototype.popNavigationItem = function (immediate) {
   var current_item = this.navigation_items_.pop();
+  if (!current_item) {
+    return null;
+  }
+
   var prev_item = goog.array.peek(this.navigation_items_);
   this.current_navigation_item_ = prev_item;
 
@@ -99,7 +113,8 @@ ian.mobile.NavigationBar.prototype.pushTitle_ = function (title, immediate) {
     title.fadeOut();
   }
 
-  this.element.appendChild(title.element);
+  var element = this.getElement();
+  element.appendChild(title.getElement());
 
   setTimeout(function () {
     title.slideIn();
@@ -146,8 +161,10 @@ ian.mobile.NavigationBar.prototype.pushBackButton_ = function (back_button, imme
     back_button.slideRight();
     back_button.fadeOut();
   }
-  this.element.insertBefore(back_button.element, this.element.firstChild);
-  back_button.setParentView(this);
+
+  var element = this.getElement();
+  element.insertBefore(back_button.getElement(), element.firstChild);
+  back_button.setParent(this);
 
   setTimeout(function () {
     back_button.slideIn();
