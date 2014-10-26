@@ -1,7 +1,7 @@
 goog.provide('ian.mobile.View');
 
 goog.require('goog.array');
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
 goog.require('goog.ui.Component');
 
 
@@ -52,9 +52,9 @@ ian.mobile.View.prototype.onTransitionEnd = function () {
 ian.mobile.View.prototype.slideLeft = function () {
   var element = this.getElement();
 
-  goog.dom.classes.add(element, 'slide');
-  goog.dom.classes.remove(element, 'right');
-  goog.dom.classes.add(element, 'left');
+  goog.dom.classlist.add(element, 'slide');
+  goog.dom.classlist.remove(element, 'right');
+  goog.dom.classlist.add(element, 'left');
 
   this.beInTransitionFor(500);
 };
@@ -63,9 +63,9 @@ ian.mobile.View.prototype.slideLeft = function () {
 ian.mobile.View.prototype.slideRight = function () {
   var element = this.getElement();
 
-  goog.dom.classes.add(element, 'slide');
-  goog.dom.classes.remove(element, 'left');
-  goog.dom.classes.add(element, 'right');
+  goog.dom.classlist.add(element, 'slide');
+  goog.dom.classlist.remove(element, 'left');
+  goog.dom.classlist.add(element, 'right');
 
   this.beInTransitionFor(500);
 };
@@ -74,9 +74,9 @@ ian.mobile.View.prototype.slideRight = function () {
 ian.mobile.View.prototype.slideIn = function () {
   var element = this.getElement();
 
-  goog.dom.classes.add(element, 'slide');
-  goog.dom.classes.remove(element, 'left');
-  goog.dom.classes.remove(element, 'right');
+  goog.dom.classlist.add(element, 'slide');
+  goog.dom.classlist.remove(element, 'left');
+  goog.dom.classlist.remove(element, 'right');
 
   this.beInTransitionFor(500);
 };
@@ -85,8 +85,8 @@ ian.mobile.View.prototype.slideIn = function () {
 ian.mobile.View.prototype.fadeOut = function () {
   var element = this.getElement();
 
-  goog.dom.classes.add(element, 'fade');
-  goog.dom.classes.remove(element, 'in');
+  goog.dom.classlist.add(element, 'fade');
+  goog.dom.classlist.remove(element, 'in');
 
   this.beInTransitionFor(500);
 };
@@ -95,8 +95,8 @@ ian.mobile.View.prototype.fadeOut = function () {
 ian.mobile.View.prototype.fadeIn = function () {
   var element = this.getElement();
 
-  goog.dom.classes.add(element, 'fade');
-  goog.dom.classes.add(element, 'in');
+  goog.dom.classlist.add(element, 'fade');
+  goog.dom.classlist.add(element, 'in');
 
   this.beInTransitionFor(500);
 };
