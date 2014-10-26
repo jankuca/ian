@@ -17,8 +17,6 @@ ian.ApplicationDelegate = function (router, ioc) {
   this.current_controller_ = null;
   this.constructors_ = {};
   this.instances_ = {};
-
-  this.init();
 };
 
 
