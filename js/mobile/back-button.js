@@ -1,28 +1,28 @@
-goog.provide('ian.mobile.Button');
+goog.provide('ian.mobile.BackButton');
 
 goog.require('goog.dom');
 goog.require('goog.dom.classlist');
-goog.require('ian.mobile.View');
+goog.require('ian.mobile.Button');
 
 
 /**
  * @constructor
- * @extends {ian.mobile.View}
+ * @extends {ian.mobile.Button}
  */
-ian.mobile.Button = function () {
-  ian.mobile.View.call(this);
+ian.mobile.BackButton = function () {
+  ian.mobile.Button.call(this);
 
-  this.type = 'submit';
-  this.label = '';
+  this.type = 'back';
+  this.label = 'Back';
 };
 
-goog.inherits(ian.mobile.Button, ian.mobile.View);
+goog.inherits(ian.mobile.BackButton, ian.mobile.Button);
 
 
-ian.mobile.Button.prototype.createDom = function () {
+ian.mobile.BackButton.prototype.createDom = function () {
   var dom = this.getDomHelper();
-  var element = dom.createDom('button', {
-    'type': this.type
+  var element = dom.createDom('span', {
+    'class': 'ui-back-button'
   });
 
   dom.setTextContent(element, this.label);
@@ -31,7 +31,7 @@ ian.mobile.Button.prototype.createDom = function () {
 };
 
 
-ian.mobile.Button.prototype.setLabel = function (label) {
+ian.mobile.BackButton.prototype.setLabel = function (label) {
   this.label = label;
 
   var element = this.getElement();
@@ -39,7 +39,7 @@ ian.mobile.Button.prototype.setLabel = function (label) {
 };
 
 
-ian.mobile.Button.prototype.enterDocument = function () {
+ian.mobile.BackButton.prototype.enterDocument = function () {
   goog.base(this, 'enterDocument');
 
   var handler = this.getHandler();
@@ -48,7 +48,7 @@ ian.mobile.Button.prototype.enterDocument = function () {
 };
 
 
-ian.mobile.Button.prototype.exitDocument = function () {
+ian.mobile.BackButton.prototype.exitDocument = function () {
   goog.base(this, 'exitDocument');
 
   var handler = this.getHandler();
@@ -57,7 +57,7 @@ ian.mobile.Button.prototype.exitDocument = function () {
 };
 
 
-ian.mobile.Button.prototype.handleClick = function (e) {
+ian.mobile.BackButton.prototype.handleClick = function (e) {
   var element = this.getElement();
   goog.dom.classlist.add(element, 'active');
 

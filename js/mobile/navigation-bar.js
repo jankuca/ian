@@ -2,7 +2,7 @@ goog.provide('ian.mobile.NavigationBar');
 
 goog.require('goog.array');
 goog.require('goog.events.Event');
-goog.require('ian.mobile.Button');
+goog.require('ian.mobile.BackButton');
 goog.require('ian.mobile.NavigationBarTitle');
 goog.require('ian.mobile.View');
 
@@ -55,7 +55,7 @@ ian.mobile.NavigationBar.prototype.pushNavigationItem = function (item, immediat
       back_button_label = '';
     }
 
-    var back_button = new ian.mobile.Button();
+    var back_button = new ian.mobile.BackButton();
     if (back_button_label) {
       back_button.setLabel(back_button_label);
     }
