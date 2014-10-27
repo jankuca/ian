@@ -35,9 +35,8 @@ ian.mobile.NavigationBar.prototype.createDom = function () {
 
 /**
  * @param {!ian.mobile.NavigationItem} item A new navigation item.
- * @param {boolean=} immediate Whether to skip the animation.
  */
-ian.mobile.NavigationBar.prototype.pushNavigationItem = function (item, immediate) {
+ian.mobile.NavigationBar.prototype.pushNavigationItem = function (item) {
   var current_item = this.current_navigation_item_;
 
   this.navigation_items_.push(item);
@@ -46,7 +45,7 @@ ian.mobile.NavigationBar.prototype.pushNavigationItem = function (item, immediat
   if (item.title && (!current_item || item.title !== current_item.title)) {
     var title = new ian.mobile.NavigationBarTitle();
     title.setText(item.title);
-    this.pushTitle_(title, immediate);
+    this.pushTitle_(title);
   }
 
   if (current_item) {
@@ -59,7 +58,7 @@ ian.mobile.NavigationBar.prototype.pushNavigationItem = function (item, immediat
     if (back_button_label) {
       back_button.setLabel(back_button_label);
     }
-    this.pushBackButton_(back_button, immediate);
+    this.pushBackButton_(back_button);
 
     var handler = this.getHandler();
     handler.listen(back_button, 'click', this.dispatchBackEvent);
@@ -68,10 +67,9 @@ ian.mobile.NavigationBar.prototype.pushNavigationItem = function (item, immediat
 
 
 /**
- * @param {boolean=} immediate Whether to skip the animation.
  * @return {ian.mobile.NavigationItem} The popped new navigation item.
  */
-ian.mobile.NavigationBar.prototype.popNavigationItem = function (immediate) {
+ian.mobile.NavigationBar.prototype.popNavigationItem = function () {
   var current_item = this.navigation_items_.pop();
   if (!current_item) {
     return null;
@@ -81,11 +79,11 @@ ian.mobile.NavigationBar.prototype.popNavigationItem = function (immediate) {
   this.current_navigation_item_ = prev_item;
 
   if (current_item.title && (!prev_item.title || current_item.title !== prev_item.title)) {
-    var current_title = this.popTitle_(immediate);
+    var current_title = this.popTitle_();
     current_title.dispose();
   }
 
-  var current_back_button = this.popBackButton_(immediate);
+  var current_back_button = this.popBackButton_();
   current_back_button.dispose();
 
   return current_item;
@@ -100,45 +98,19 @@ ian.mobile.NavigationBar.prototype.dispatchBackEvent = function () {
 
 /**
  * @param {!ian.mobile.NavigationBarTitle} title The new title view.
- * @param {boolean=} immediate Whether to skip the animation.
  */
-ian.mobile.NavigationBar.prototype.pushTitle_ = function (title, immediate) {
-  var current_title = goog.array.peek(this.titles_);
+ian.mobile.NavigationBar.prototype.pushTitle_ = function (title) {
   this.titles_.push(title);
-
-  if (current_title && !immediate) {
-    current_title.slideLeft();
-    current_title.fadeOut();
-    title.slideRight();
-    title.fadeOut();
-  }
-
-  var element = this.getElement();
-  element.appendChild(title.getElement());
-
-  setTimeout(function () {
-    title.slideIn();
-    title.fadeIn();
-  }, 0);
+  this.addChildAt(title, 0, true);
 };
 
 
 /**
- * @param {boolean=} immediate Whether to skip the animation.
  * @return {ian.mobile.NavigationBarTitle} The previous title view.
  */
-ian.mobile.NavigationBar.prototype.popTitle_ = function (immediate) {
+ian.mobile.NavigationBar.prototype.popTitle_ = function () {
   var current_title = this.titles_.pop();
-  var prev_title = goog.array.peek(this.titles_);
-
-  if (current_title && !immediate) {
-    current_title.slideRight();
-    current_title.fadeOut();
-  }
-  if (prev_title) {
-    prev_title.slideIn();
-    prev_title.fadeIn();
-  }
+  this.removeChild(current_title, true);
 
   return current_title;
 };
@@ -146,49 +118,19 @@ ian.mobile.NavigationBar.prototype.popTitle_ = function (immediate) {
 
 /**
  * @param {!ian.mobile.Button} back_button The new title view.
- * @param {boolean=} immediate Whether to skip the animation.
  */
-ian.mobile.NavigationBar.prototype.pushBackButton_ = function (back_button, immediate) {
-  var current_back_button = goog.array.peek(this.back_buttons_);
+ian.mobile.NavigationBar.prototype.pushBackButton_ = function (back_button) {
   this.back_buttons_.push(back_button);
-
-  if (current_back_button && !immediate) {
-    current_back_button.slideLeft();
-    current_back_button.fadeOut();
-  }
-
-  if (!immediate) {
-    back_button.slideRight();
-    back_button.fadeOut();
-  }
-
-  var element = this.getElement();
-  element.insertBefore(back_button.getElement(), element.firstChild);
-  back_button.setParent(this);
-
-  setTimeout(function () {
-    back_button.slideIn();
-    back_button.fadeIn();
-  }, 0);
+  this.addChildAt(back_button, 0, true);
 };
 
 
 /**
- * @param {boolean=} immediate Whether to skip the animation.
  * @return {ian.mobile.NavigationBarTitle} The previous back_button view.
  */
-ian.mobile.NavigationBar.prototype.popBackButton_ = function (immediate) {
+ian.mobile.NavigationBar.prototype.popBackButton_ = function () {
   var current_back_button = this.back_buttons_.pop();
-  var prev_back_button = goog.array.peek(this.back_buttons_);
-
-  if (current_back_button && !immediate) {
-    current_back_button.slideRight();
-    current_back_button.fadeOut();
-  }
-  if (prev_back_button) {
-    prev_back_button.slideIn();
-    prev_back_button.fadeIn();
-  }
+  this.removeChild(current_back_button, true);
 
   return current_back_button;
 };

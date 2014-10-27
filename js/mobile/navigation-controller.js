@@ -1,5 +1,6 @@
 goog.provide('ian.mobile.NavigationController');
 
+goog.require('goog.events.Event');
 goog.require('ian.mobile.NavigationBar');
 goog.require('ian.mobile.NavigationItem');
 goog.require('ian.mobile.View');
@@ -88,12 +89,12 @@ ian.mobile.NavigationController.prototype.setToolbar = function (toolbar) {
 
 /**
  * @param {!ian.mobile.NavigationView} view The view to add.
- * @param {boolean=} immediate Whether to immediately show the view.
  */
-ian.mobile.NavigationController.prototype.pushView = function (view, immediate) {
+ian.mobile.NavigationController.prototype.pushView = function (view) {
   var current_view = goog.array.peek(this.views);
 
   this.views.push(view);
+  this.addChild(view, true);
 
   if (this.navigation_bar) {
     var navigation_item = view.navigation_item;
@@ -101,46 +102,27 @@ ian.mobile.NavigationController.prototype.pushView = function (view, immediate) 
       navigation_item = navigation_item || current_view.navigation_item;
     }
     navigation_item = navigation_item || new ian.mobile.NavigationItem();
-    this.navigation_bar.pushNavigationItem(navigation_item, immediate);
+    this.navigation_bar.pushNavigationItem(navigation_item);
   }
 
-  if (current_view && !immediate) {
-    view.slideRight();
-  }
-
-  this.addChild(view, true);
-
-  setTimeout(function () {
-    if (current_view && !immediate) {
-      current_view.slideLeft();
-    }
-    view.slideIn();
-  }, 0);
+  var e = new goog.events.Event('push');
+  this.dispatchEvent(e);
 };
 
 
-/**
- * @param {boolean=} immediate Whether to immediately remove the view from DOM.
- */
-ian.mobile.NavigationController.prototype.popView = function (immediate) {
+ian.mobile.NavigationController.prototype.popView = function () {
   var current_view = this.views.pop();
   if (!current_view) {
     return;
   }
 
   if (this.navigation_bar) {
-    this.navigation_bar.popNavigationItem(immediate);
+    this.navigation_bar.popNavigationItem();
   }
+  this.removeChild(current_view, true);
 
-  var prev_view = goog.array.peek(this.views);
-  if (prev_view) {
-    if (!immediate) {
-      current_view.slideRight();
-    }
-    prev_view.slideIn();
-  }
-
-  current_view.dispose();
+  var e = new goog.events.Event('pop');
+  this.dispatchEvent(e);
 };
 
 
