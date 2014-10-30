@@ -22,16 +22,21 @@ ian.Location = function (win) {
 ian.Location.prototype.snapshot_ = function () {
   var location = this.$location;
 
-  this.hash = location.hash;
   this.host = location.host;
   this.hostname = location.hostname;
   this.href_ = location.href;
   this.origin = location.origin;
   this.port = location.port;
   this.protocol = location.protocol;
+  this.pathname = location.pathname;
+  this.hash = location.hash;
 
-  var hash_path = location.hash.replace(/^#!?/, '').substr(1).split('#')[0];
-  this.pathname = location.pathname + hash_path;
+  var hash = location.hash;
+  if (hash.substr(0, 2) === '#!/') {
+    var hash_parts = hash.substr(3).split('#');
+    this.pathname = hash_parts[0];
+    this.hash = hash_parts.slice(1).join('#');
+  }
 };
 
 
