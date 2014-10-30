@@ -25,7 +25,7 @@ ian.Location.prototype.snapshot_ = function () {
   this.hash = location.hash;
   this.host = location.host;
   this.hostname = location.hostname;
-  this.href = location.href;
+  this.href_ = location.href;
   this.origin = location.origin;
   this.port = location.port;
   this.protocol = location.protocol;
@@ -33,3 +33,23 @@ ian.Location.prototype.snapshot_ = function () {
   var hash_path = location.hash.replace(/^#!?/, '').substr(1).split('#')[0];
   this.pathname = location.pathname + hash_path;
 };
+
+
+ian.Location.prototype.getHref = function () {
+  return this.href_;
+};
+
+
+ian.Location.prototype.setHref = function (href) {
+  this.href_ = href;
+  this.$location.href = href;
+  return this.$location.href;
+};
+
+
+Object.defineProperties(ian.Location.prototype, {
+  href: {
+    get: ian.Location.prototype.getHref,
+    set: ian.Location.prototype.setHref
+  }
+});
