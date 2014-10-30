@@ -220,7 +220,7 @@ ian.Router.prototype.navigateToPath = function (path) {
 
 
 /**
- * @param {string} path An absolute path.
+ * @param {!goog.Uri|string} path An absolute path.
  */
 ian.Router.prototype.redirectToPath = function (path) {
   this.$location.href = path;
