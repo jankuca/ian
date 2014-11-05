@@ -14,6 +14,8 @@ ian.mobile.BackButton = function () {
 
   this.type = 'back';
   this.label = 'Back';
+
+  this.active_ = true;
 };
 
 goog.inherits(ian.mobile.BackButton, ian.mobile.Button);
@@ -28,6 +30,14 @@ ian.mobile.BackButton.prototype.createDom = function () {
   dom.setTextContent(element, this.label);
 
   this.setElementInternal(element);
+};
+
+
+ian.mobile.BackButton.prototype.setActive = function (active) {
+  this.active_ = active;
+
+  var element = this.getElement();
+  element.style.display = active ? '' : 'none';
 };
 
 

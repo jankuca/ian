@@ -128,8 +128,15 @@ ian.mobile.NavigationBar.prototype.popTitle_ = function () {
  * @param {!ian.mobile.Button} back_button The new title view.
  */
 ian.mobile.NavigationBar.prototype.pushBackButton_ = function (back_button) {
+  var current_back_button = this.back_buttons_[0];
+
   this.back_buttons_.push(back_button);
   this.addChildAt(back_button, 0, true);
+
+  back_button.setActive(true);
+  if (current_back_button) {
+    current_back_button.setActive(false);
+  }
 };
 
 
@@ -138,7 +145,13 @@ ian.mobile.NavigationBar.prototype.pushBackButton_ = function (back_button) {
  */
 ian.mobile.NavigationBar.prototype.popBackButton_ = function () {
   var current_back_button = this.back_buttons_.pop();
+  current_back_button.setActive(false);
   this.removeChild(current_back_button, true);
+
+  var back_button = this.back_buttons_[0];
+  if (back_button) {
+    back_button.setActive(true);
+  }
 
   return current_back_button;
 };
