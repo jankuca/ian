@@ -32,7 +32,7 @@ ian.Location.prototype.snapshot_ = function () {
   this.hash = location.hash;
 
   var hash = location.hash;
-  if (hash.substr(0, 2) === '#!/') {
+  if (hash.substr(0, 3) === '#!/') {
     var hash_parts = hash.substr(3).split('#');
     this.pathname = hash_parts[0];
     this.hash = hash_parts.slice(1).join('#');
