@@ -54,10 +54,8 @@ ian.mobile.NavigationController.prototype.setNavigationBar = function (bar) {
   var element = this.getElement();
 
   if (this.navigation_bar) {
-    if (element) {
-      element.removeChild(this.navigation_bar.getElement());
-    }
     handler.unlisten(this.navigation_bar, 'back', this.handleBackButtonClick_);
+    this.removeChild(this.navigation_bar, true);
   }
 
   this.navigation_bar = bar;
