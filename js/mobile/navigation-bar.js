@@ -67,6 +67,14 @@ ian.mobile.NavigationBar.prototype.pushNavigationItem = function (item) {
 
 
 /**
+ * @return {ian.mobile.NavigationItem} The next navigation item in the queue.
+ */
+ian.mobile.NavigationBar.prototype.peekNavigationItem = function () {
+  return this.navigation_items_[0] || null;
+};
+
+
+/**
  * @return {ian.mobile.NavigationItem} The popped new navigation item.
  */
 ian.mobile.NavigationBar.prototype.popNavigationItem = function () {
