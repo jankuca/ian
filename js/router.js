@@ -277,7 +277,7 @@ ian.Router.prototype.getPathByTargetAndParams = function (target, params) {
 
 
 ian.Router.prototype.emitCurrentState_ = function () {
-  var path = this.$location.pathname;
+  var path = this.$location.pathname + this.$location.search;
 
   var base = this.base;
   if (path.substr(0, base.length) === base) {
@@ -324,9 +324,23 @@ ian.Router.prototype.getRouteByTargetAndParams = function (target, params) {
  * @param {string} path A location path.
  */
 ian.Router.prototype.createStateForPath_ = function (path) {
+  if (this.$history.shimmed) {
+    path = path.replace(/:\d+$/, '');
+  }
+
   var parts = path.split('?');
   var pathname = parts[0];
+
   var query_string = parts.slice(1).join('?');
+  var params = {};
+  if (query_string) {
+    var query_string_parts = query_string.split('&');
+    query_string_parts.forEach(function (query_string_part) {
+      var subparts = query_string_part.split('=');
+      params[subparts[0]] = subparts.slice(1).join('=');
+    });
+  }
+
 
   var routes = this.routes_;
   for (var i = 0, ii = routes.length; i < ii; ++i) {
@@ -334,7 +348,6 @@ ian.Router.prototype.createStateForPath_ = function (path) {
     var match = pathname.match(route.rx);
 
     if (match) {
-      var params = {};
       var param_keys = route.param_keys;
       for (var p = 0; p < param_keys.length; ++p) {
         params[param_keys[p]] = match[p + 1];
