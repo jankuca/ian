@@ -29,13 +29,20 @@ ian.Location.prototype.snapshot_ = function () {
   this.port = location.port;
   this.protocol = location.protocol;
   this.pathname = location.pathname;
+  this.search = location.search;
   this.hash = location.hash;
 
   var hash = location.hash;
   if (hash.substr(0, 3) === '#!/') {
-    var hash_parts = hash.substr(3).split('#');
-    this.pathname = hash_parts[0];
+    var hash_parts = hash.substr(2).split('#');
     this.hash = hash_parts.slice(1).join('#');
+
+    var path_parts = hash_parts[0].split('?');
+    this.pathname = path_parts[0];
+    this.search = '';
+    if (path_parts.length > 1) {
+      this.search = '?' + path_parts.slice(1).join('?');
+    }
   }
 };
 
