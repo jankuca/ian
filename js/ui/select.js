@@ -1,7 +1,7 @@
 goog.provide('ian.ui.Select');
 
 goog.require('goog.array');
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
 goog.require('goog.dom.forms');
 goog.require('goog.events.Event');
 goog.require('goog.events.KeyCodes');
@@ -37,7 +37,7 @@ ian.ui.Select.convertSelectBoxesInElement = function (container) {
   var selects = [];
 
   goog.array.forEach(select_boxes, function (select_box) {
-    if (!goog.dom.classes.has(select_box.parentNode, 'select')) {
+    if (!goog.dom.classlist.has(select_box.parentNode, 'select')) {
       var select = new ian.ui.Select();
       select.decorate(select_box);
 
@@ -74,7 +74,7 @@ ian.ui.Select.prototype.decorate = function (select_box) {
       var dropdown_item_label = dom.getTextContent(option) || option.value;
       var dropdown_item_el = dom.createDom('li', {}, dropdown_item_label);
       if (i === select_box.selectedIndex) {
-        goog.dom.classes.add(dropdown_item_el, 'selected');
+        goog.dom.classlist.add(dropdown_item_el, 'selected');
       }
       this.dropdown_el_.appendChild(dropdown_item_el);
       dropdown_items.push(dropdown_item_el);
@@ -137,10 +137,10 @@ ian.ui.Select.prototype.update = function () {
   var old_dropdown_item = this.dropdown_items_[this.selected_index_ - 1];
   var new_dropdown_item = this.dropdown_items_[selected_index - 1];
   if (old_dropdown_item) {
-    goog.dom.classes.remove(old_dropdown_item, 'selected');
+    goog.dom.classlist.remove(old_dropdown_item, 'selected');
   }
   if (new_dropdown_item) {
-    goog.dom.classes.add(new_dropdown_item, 'selected');
+    goog.dom.classlist.add(new_dropdown_item, 'selected');
   }
 
   dom.setTextContent(this.value_el_, option_label);

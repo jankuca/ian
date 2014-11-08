@@ -1,6 +1,7 @@
 goog.provide('ian.ui.Compiler');
 
 goog.require('goog.array');
+goog.require('goog.dom.classlist');
 goog.require('goog.events.EventHandler');
 goog.require('goog.string');
 goog.require('ian.object');
@@ -310,9 +311,9 @@ ian.ui.Compiler.prototype.handleStateChange_ = function (e) {
     if (diff.hasOwnProperty(state_key)) {
       var class_name = base_class_name + '-' + state_key;
       if (value) {
-        goog.dom.classes.add(element, class_name);
+        goog.dom.classlist.add(element, class_name);
       } else {
-        goog.dom.classes.remove(element, class_name);
+        goog.dom.classlist.remove(element, class_name);
       }
     }
   });
