@@ -7,6 +7,7 @@ goog.require('ian.Location');
 goog.require('ian.MouseHandler');
 goog.require('ian.TouchHandler');
 goog.require('goog.dom');
+goog.require('goog.events.Event');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
 goog.require('goog.object');
@@ -287,6 +288,8 @@ ian.Router.prototype.emitCurrentState_ = function () {
   var state = this.createStateForPath_(path);
   if (state) {
     this.setState(state);
+  } else {
+    this.dispatchEvent(new goog.events.Event('error'));
   }
 };
 
